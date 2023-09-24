@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100;200;300;400;500;600;700;800;900&display=swap');
+  * {
+    font-family: 'Noto Kufi Arabic', sans-serif;   
+   }
+html  {
+  direction: rtl;
+}
+header{
+    direction: ltr;
+}
+.form-control {
+  width: 70%;
+}
+  .left-column , .Specification p , .user-manual p{
+    text-align: right;
+}
+.right-column{
+    text-align: left;
+}
+.Specification p {
+    text-align: right;
+    padding-left: 0%;
+    padding-right: 2%;
+  }
+  .price h1{
+    padding-right: 0%;
+    padding-left: 1%;
+    font-weight: 600;
+}
+.Add-to-List , .Lost-a-Sale {
+  font-size: 1.3rem;
+  font-weight: 700;
+  width: 25%;
+}
+.footer-in-header span{
+  align-content: right;
+  font-weight: 600;
+}
+.flag{
+  margin-bottom: 2%;
+}
+.inline-Description , .availblity-Preordered , .price-products-category .price,.price-products-category .currncy{
+  padding-left: 1%;
+}
+.user-manual hr{
+  margin-right: 1%!important; 
+  margin-left: 1.5%!important;
+}
+  #left-end-footer{
+    padding-right: 4%;
+  }
+  #right-end-footer{
+    padding-left: 4%;
+  }
+  .space-between1{
+    margin-left:0px!important;
+    margin-right: 30px!important;
+  }
+  .images-container{
+    padding-left: 2%!important;
+  }
+
+.buttons-container button {
+  margin-left: 5%;
+  margin-right: 0;
+  font-weight: 500;
+}
+.availblity-container p{
+  font-weight: 600;
+}
+.card{
+  direction: rtl;
+}
+.card-title {
+  font-weight: 500;
+}
+.card-price{
+  font-weight: 600!important;
+}
+.Description p {
+  padding: 1%;
+}
+  .stock p , .Preordered p , .availblity-container p , #Description-heading , .Specification p, .user-manual p , .products-category-header,.navbar a p{
+    font-weight: 500;
+}
+.end-footer p ,.end-footer a{
+  font-weight: 500;
+}
+
+@media (max-width: 891px)  {
+  .lang{
+    font-size: 0.9rem!important;
+  }}
+  @media (max-width: 992px){
+  .flag {
+    padding-right: 60%;
+}}
+@media (max-width: 674px){
+  .flag {
+    padding-right: 50%;
+}}
+@media (max-width: 611px){
+  .flag {
+    padding-right: 45%;
+}}
+@media (max-width: 371px){
+  .flag {
+    padding-right: 40%;
+}}
+@media (max-width: 344px){
+  .flag {
+    padding-right: 35%;
+}}
+@media (max-width: 322px){
+  .flag {
+    padding-right: 30%;
+}}
+  @media (max-width: 1440px)  {
+    .Add-to-List , .Lost-a-Sale {
+        font-size: 1.2rem;
+        width: 30%;
+    }}
+    @media (max-width: 1024px)  {
+      .Add-to-List , .Lost-a-Sale {
+          font-size: 1rem;
+          width: 32%;
+      }}
+      @media (max-width: 800px)  {
+        .Add-to-List , .Lost-a-Sale {
+            width: 35%;
+        }}
+        @media (max-width: 700px)  {
+          .Add-to-List , .Lost-a-Sale {
+            font-size: 0.9rem;
+              width: 37%;
+          }}
+          @media (max-width: 600px)  {
+            .Add-to-List , .Lost-a-Sale {
+                width: 42%;
+            }}
+            @media (max-width: 550px)  {
+              .Add-to-List , .Lost-a-Sale {
+                font-size: 0.8rem;
+                  width: 40%;
+              }}
+
+
+
+              @media (max-width: 500px)  {
+              .Lost-a-Sale {
+                width: 39%;
+                font-size: 0.9rem;  
+                margin-right: 50px !important;
+                margin-left: 0!important;
+              }
+                        .Add-to-List{
+                          width: 39%;
+                            font-size: 0.9rem;
+                            margin-right: 0!important;
+                        } }
+                        @media (max-width: 371px)  {
+                          .Add-to-List , .Lost-a-Sale {
+                            width: 37%;
+                          }}
+
+    @media (max-width: 1024px)  {
+                  .Specification{
+                      padding-left: 0%;
+                  }}
+
+  @media (max-width: 650px)  {
+      .space-between1{
+        margin-left:0px;
+        margin-right: 20px;
+      }}
+              
+      @media (max-width: 524px)  {
+        .lang{
+          font-size: 0.8rem!important;
+        }}
+       
+  @media (max-width: 506px)  {
+        .space-between1{
+            margin-left:0px;
+            margin-right: 17px;    
+        }}
+        @media (max-width: 536px){
+        .stock {
+            width: 49%;
+        }}     
+           @media (max-width: 500px){
+          .stock {
+              width: 100%;
+          }}
+          @media (max-width: 768px){
+          #product-name,.Preordered p,.stock p,#Description-heading , .Specification p ,.user-manual p ,.products-category-header {
+            font-size: 1.4rem!important;
+            font-weight: 700!important;
+            }
+            .product-content .price h1{
+              font-size: 1.1rem!important;
+            }
+            td,th,.Preordered td ,.Description p ,.user-manual a {
+              font-size: 0.9rem!important;
+              font-weight: 500!important;
+              }}   
+              
+              @media (max-width: 500px){
+.availblity-container p {
+    font-size: 1.1rem;
+}
+                #product-name,.Preordered p,.stock p,#Description-heading , .Specification p ,.user-manual p ,.products-category-header {
+                  font-size: 1.6rem!important;
+                  }
+                  .product-content .price h1{
+                    font-size: 1.3rem!important;
+                  }
+                  td,th,.Preordered td ,.Description p ,.user-manual a {
+                    font-size: 1rem!important;
+                    }}   
