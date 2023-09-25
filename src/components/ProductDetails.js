@@ -21,6 +21,8 @@ const ProductDetails = () => {
             <ul className="splide__list">
               {/* Add your images here */}
               <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product2.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product3.png" alt="product pic"/></li>
               {/* ... */}
             </ul>
           </div>
@@ -30,6 +32,8 @@ const ProductDetails = () => {
             <ul className="splide__list">
               {/* Add your thumbnails here */}
               <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product2.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product3.png" alt="product pic"/></li>
               {/* ... */}
             </ul>
           </div>
