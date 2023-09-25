@@ -1,18 +1,62 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '@splidejs/splide/dist/css/splide.min.css';
 import Splide from '@splidejs/splide';
 
 const ProductDetails = () => {
-
-  React.useEffect(() => {
-    new Splide('#image-carousel', {
-      type  : 'fade',
+  useEffect(() => {
+    const primarySlider = new Splide('#image-carousel', {
+      type: 'fade',
+      rewind: true,
+      pagination: false,
       arrows: true,
-    }).mount();
-    
-    new Splide('#thumbnail-carousel').mount();
+      // Add more options here
+    });
+
+    const secondarySlider = new Splide('#thumbnail-carousel', {
+      fixedWidth: 100,
+      fixedHeight: 110,
+      gap: 10,
+      rewind: true,
+      pagination: false,
+      isNavigation: true,
+      arrows: false,
+      breakpoints : {
+        984:{
+          gap         : 0,
+          fixedWidth : 90,
+          fixedHeight: 80,
+        },
+        818:{
+          gap         : 10,
+          fixedWidth : 70,
+          fixedHeight: 80,
+        },
+        730:{
+          gap         : 15,
+          fixedWidth : 60,
+          fixedHeight: 80,
+        },
+        650:{
+          gap         : 10,
+          fixedWidth : 50,
+          fixedHeight: 80,
+        },
+        500: {
+          gap         : 10,
+          fixedWidth : 100,
+          fixedHeight: 100,
+        },},
+    });
+
+    // Sync the primary slider with the secondary one.
+    primarySlider.sync(secondarySlider);
+
+    primarySlider.mount();
+    secondarySlider.mount();
   }, []);
 
+  // Your render code stays unchanged...
+  
   return (
     <div className="content-container">
       <div className="images-container">
@@ -21,8 +65,13 @@ const ProductDetails = () => {
             <ul className="splide__list">
               {/* Add your images here */}
               <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
               <li className="splide__slide"><img src="/pics/product2.png" alt="product pic"/></li>
               <li className="splide__slide"><img src="/pics/product3.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product4.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product5.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product6.png" alt="product pic"/></li>
               {/* ... */}
             </ul>
           </div>
@@ -34,6 +83,9 @@ const ProductDetails = () => {
               <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
               <li className="splide__slide"><img src="/pics/product2.png" alt="product pic"/></li>
               <li className="splide__slide"><img src="/pics/product3.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product4.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product5.png" alt="product pic"/></li>
+              <li className="splide__slide"><img src="/pics/product6.png" alt="product pic"/></li>
               {/* ... */}
             </ul>
           </div>
@@ -58,4 +110,5 @@ const ProductDetails = () => {
     </div>
   );
 };
+
 export default ProductDetails;
