@@ -4,7 +4,7 @@ import React from 'react';
 const AvailabilityStock = () => {
   return (
     // Replace this div with the HTML content related to Availability and Stock.
-    
+    <div className="header-content-container"> 
       <div className="availblity-stock-container">
         {/* availblity section */}
         <div className="availblity-Preordered">
@@ -58,6 +58,7 @@ const AvailabilityStock = () => {
           </table>
         </div>
       </div>   
+      </div>
   );
 };
 

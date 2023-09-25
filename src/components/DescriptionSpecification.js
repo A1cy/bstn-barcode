@@ -4,7 +4,7 @@ import React from 'react';
 const DescriptionSpecification = () => {
   return (
     // Replace this div with the HTML content related to Description and Specification.
-    
+    <div className="header-content-container">
    <div className="Description-Specification-container">
         {/* Description section */}
         <div className="inline-Description">
@@ -57,6 +57,7 @@ const DescriptionSpecification = () => {
             <div className="pdf-icon-padding"> <a href="myfile.pdf" download> <img className="pdf-icon" src="pics\pdf-icon.png" alt="pdf" /> <span id="User-manual-pdf">User manual</span></a> <a href="myfile.pdf" download> <img className="pdf-icon" src="pics\pdf-icon.png" alt="Video" /> <span id="User-manual-Videos">Videos</span></a> </div>
           </div>
         </div>
+      </div>
       </div>
           
   );

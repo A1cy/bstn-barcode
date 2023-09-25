@@ -5,7 +5,7 @@ import Splide from '@splidejs/splide';
 const ProductDetails = () => {
   useEffect(() => {
     const primarySlider = new Splide('#image-carousel', {
-      type: 'fade',
+      // type: 'fade',
       rewind: true,
       pagination: false,
       arrows: true,
@@ -58,14 +58,13 @@ const ProductDetails = () => {
   // Your render code stays unchanged...
   
   return (
+    <div className="header-content-container">
     <div className="content-container">
       <div className="images-container">
         <section id="image-carousel" className="splide splide--fade splide--rtl splide--draggable is-active is-initialized">
           <div className="splide__track">
             <ul className="splide__list">
               {/* Add your images here */}
-              <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
-              <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
               <li className="splide__slide"><img src="/pics/product1.png" alt="product pic"/></li>
               <li className="splide__slide"><img src="/pics/product2.png" alt="product pic"/></li>
               <li className="splide__slide"><img src="/pics/product3.png" alt="product pic"/></li>
@@ -107,6 +106,7 @@ const ProductDetails = () => {
             <button className="Lost-a-Sale" id="Lost-a-Sale">Lost a Sale</button>
           </div>
         </div>
+    </div>
     </div>
   );
 };

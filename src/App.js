@@ -18,6 +18,8 @@ const App = () => {
       <DescriptionSpecification />
       <ProductSlider title="Related Products" />
       <ProductSlider title="Addions of the Products" />
+      <ProductSlider title="cross selling Products" />
+      <ProductSlider title="Upselling Products" />
       <Footer />
     </div>
   );
