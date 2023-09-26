@@ -1,24 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { QrReader } from 'react-qr-reader';
 
-// Footer Component
-const Footer = () => {
+function Footer() {
+  const [showScanner, setShowScanner] = useState(false);
+
+  const handleScan = data => {
+    if (data) {
+      console.log(`Scanned data: ${data}`);
+      setShowScanner(false); // Close the scanner after a successful scan
+    }
+  };
+
+  const handleError = err => {
+    console.error(err);
+    setShowScanner(false); // Close the scanner in case of an error
+  };
+
   return (
-    // HTML content related to the footer
     <footer>
       <div className="navbar">
         <a href="#" className="active">
           <img src="pics/home-icon.png" alt="home" />
           <p id="home-footer">HOME</p>
         </a>
-        <a href="#">
-          <img src="pics/scan-icon.png" alt="scan" />
-          <p id="scan-footer">SCAN A NEW PRODUCT</p>
-        </a>
+
+        <div className="scanner-section">
+          <a href="#" onClick={e => {e.preventDefault(); setShowScanner(true)}}>
+            <img src="pics/scan-icon.png" alt="scan" />
+            <p id="scan-footer">SCAN A NEW PRODUCT</p>
+          </a>
+
+          {showScanner && (
+            <div className="scanner-modal">
+              <QrReader
+                delay={300}
+                onError={handleError}
+                onScan={handleScan}
+                style={{ width: '100%' }}
+              />
+              {/* <button onClick={() => setShowScanner(false)}>Close Scanner</button> */}
+            </div>
+          )}
+        </div>
+
         <a href="#">
           <img src="pics/list-icon.png" alt="list" />
           <p id="list-footer">LIST</p>
         </a>
       </div>
+
       <div className="end-footer">
         <div id="left-end-footer">
           <a href="#" id="terms">Terms and Conditions</a>
@@ -31,6 +61,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+}
 
 export default Footer;
