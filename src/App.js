@@ -1,30 +1,30 @@
-import React from 'react';
-import HeaderContentContainer from './components/HeaderContentContainer';
-import ProductDetails from './components/ProductDetails';
-import AvailabilityStock from './components/AvailabilityStock';
-import DescriptionSpecification from './components/DescriptionSpecification';
-import ProductSlider from './components/ProductSlider';
-import Footer from './components/Footer';
-import "slick-carousel/slick/slick.css"; 
-import "slick-carousel/slick/slick-theme.css";
- 
+import React, { useState } from 'react';
+import LoginPage from './pages/LoginPage';
+import HomePage from './pages/HomePage';
+import ProductPage from './pages/ProductPage';
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState('login');
+  const [currentSku, setCurrentSku] = useState(null);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    setCurrentPage('home');
+  };
+
+  const handleNavigateToProduct = (sku) => {
+    setCurrentSku(sku);
+    setCurrentPage('product');
+  };
+
   return (
     <div>
-      <HeaderContentContainer />
-      <ProductDetails />
-      <AvailabilityStock />
-      <DescriptionSpecification />
-      <ProductSlider title="Related Products" />
-      <ProductSlider title="Addions of the Products" />
-      <ProductSlider title="cross selling Products" />
-      <ProductSlider title="Upselling Products" />
-      <Footer />
+      {currentPage === 'login' && !isLoggedIn && <LoginPage onLogin={handleLogin} />}
+      {currentPage === 'home' && isLoggedIn && <HomePage onNavigateToProduct={handleNavigateToProduct} />}
+      {currentPage === 'product' && isLoggedIn && <ProductPage sku={currentSku} />}
     </div>
   );
 };
 
 export default App;
- 
- 
