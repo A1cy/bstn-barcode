@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import HeaderContentContainer from '../components/HeaderContentContainer';
-import Footer from '../components/Footer';
+ 
 
 
 const HomePage = ({ onNavigateToProduct }) => {

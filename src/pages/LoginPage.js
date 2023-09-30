@@ -1,6 +1,5 @@
 import React from 'react';
-import HeaderContentContainer from '../components/HeaderContentContainer';
-import Footer from '../components/Footer';
+ 
 
 const LoginPage = ({ onLogin }) => {
    const handleLoginSubmit = () => {

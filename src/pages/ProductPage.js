@@ -5,6 +5,8 @@ import AvailabilityStock from '../components/AvailabilityStock';
 import DescriptionSpecification from '../components/DescriptionSpecification';
 import ProductSlider from '../components/ProductSlider';
 import Footer from '../components/Footer';
+
+
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 
