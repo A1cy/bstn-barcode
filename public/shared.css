@@ -1755,3 +1755,76 @@ button.user-log{
   border: 0;
   }
 
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Takes at least the full height of the viewport */
+    margin: 0 auto; /* Centers the content horizontally */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .home-header {
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .logo {
+    width: 120px;
+    height: auto;
+  }
+  
+  .home-main {
+    /* width: 100%;
+    max-width: 600px; */
+    /* padding: 20px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sku-form {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .sku-input {
+    padding: 10px;
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .sku-submit-button {
+    padding: 10px 20px;
+    background-color: #73CDE1;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .sku-submit-button:hover {
+    background-color: #73CDE1;
+  }
+  
+  .scan-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    background-color: #73CDE1;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .scan-button:hover {
+    background-color: #4ea0b3;
+  }
+  

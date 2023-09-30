@@ -9,7 +9,7 @@ const LoginPage = ({ onLogin }) => {
    };
   return (
    <div>
-  <HeaderContentContainer />
+  {/* <HeaderContentContainer /> */}
 <div className="content-container bstn-login">
   <div className="blurred-box">
     <div className="user-login-box">
