@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import QrReader from 'react-qr-reader';
+import QRBarcodeScanner from 'react-qr-barcode-scanner';
 
 function Footer() {
   const [showScanner, setShowScanner] = useState(false);
@@ -32,7 +32,7 @@ function Footer() {
 
           {showScanner && (
             <div className="scanner-modal">
-              <QrReader
+              <QRBarcodeScanner
                 delay={300}
                 onError={handleError}
                 onScan={handleScan}
