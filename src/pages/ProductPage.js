@@ -14,7 +14,7 @@ const ProductPage = ({ sku }) => {
   return (
     <div>
       <HeaderContentContainer />
-      {/* <h1>Product Page for SKU: {sku}</h1> */}
+       <h1>Product Page for SKU: {sku}</h1>  
       <ProductDetails />
       <AvailabilityStock />
       <DescriptionSpecification />

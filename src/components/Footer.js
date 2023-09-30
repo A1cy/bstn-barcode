@@ -10,6 +10,10 @@ function Footer() {
       setShowScanner(false); // Close the scanner after a successful scan
     }
   };
+  const handleUpdate = (data) => {
+    // handle update logic here
+    console.log('Update data:', data);
+  };
 
   const handleError = err => {
     console.error(err);
@@ -37,6 +41,7 @@ function Footer() {
                   delay={300}
                   onError={handleError}
                   onScan={handleScan}
+                  onUpdate={handleUpdate}
                   style={{ width: '100%' }}
                 />
                 <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
