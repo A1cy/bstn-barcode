@@ -1827,67 +1827,39 @@ button.user-log{
   .scan-button:hover {
     background-color: #4ea0b3;
   }
-  .scanner-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw; /* Full width of the viewport */
-    height: 100vh; /* Full height of the viewport */
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    z-index: 1000; /* Ensure modal is on top of other elements */
-  }
   
-  .scanner-content {
-    width: 80%; /* Width of the scanner content */
-    max-width: 400px; /* Maximum width of the scanner content */
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  }
+.scanner-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  z-index: 1000;
+}
+
+.scanner-content {
+
+  background-color: #fff;
+   flex-direction: column;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.close-button {
+  background-color: #ff6262; /* red color */
+  color: #fff; /* white text */
+  padding: 10px 20px;
+  border: none;
+   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+  background-color: #e60000; /* darker red on hover */
+}
   
-  /* Responsive Design: Adjust the style for smaller screens */
-  @media (max-width: 600px) {
-    .scanner-content {
-      width: 95%; /* Almost full width on small screens */
-    }
-  }
-  .scanner-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
-    z-index: 1000;
-  }
-  
-  .scanner-content {
-    width: 80%;
-    max-width: 500px; 
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .close-button {
-    background-color: #ff6262; /* red color */
-    color: #fff; /* white text */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .close-button:hover {
-    background-color: #e60000; /* darker red on hover */
-  }
-    
