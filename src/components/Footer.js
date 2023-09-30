@@ -32,15 +32,18 @@ function Footer() {
 
           {showScanner && (
             <div className="scanner-modal">
-              <QRBarcodeScanner
-                delay={300}
-                onError={handleError}
-                onScan={handleScan}
-                style={{ width: '100%' }}
-              />
-              {/* <button onClick={() => setShowScanner(false)}>Close Scanner</button> */}
+              <div className="scanner-content">
+                <QRBarcodeScanner
+                  delay={300}
+                  onError={handleError}
+                  onScan={handleScan}
+                  style={{ width: '100%' }}
+                />
+                <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
+              </div>
             </div>
           )}
+
         </div>
 
         <a href="#">
