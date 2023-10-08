@@ -37,7 +37,7 @@ export default function Home() {
     return (
         <div className="container">
             <input type="text" value={sku} onChange={handleSkuChange} />
-            <button onClick={handleSearch}>Search</button>
+            <button onClick={handleSearch}>Search Product</button>
             {error && <p>{error}</p>}
             {productDetail && productDetail.item && (
     <div>

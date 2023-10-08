@@ -11,8 +11,7 @@ function Footer() {
     }
   };
   const handleUpdate = (data) => {
-    // handle update logic here
-    console.log('Update data:', data);
+     console.log('Update data:', data);
   };
 
   const handleError = err => {
