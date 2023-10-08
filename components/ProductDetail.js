@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import '@splidejs/splide/dist/css/splide.min.css';
 import Splide from '@splidejs/splide';
 
+
 const ProductDetails = () => {
   useEffect(() => {
     const primarySlider = new Splide('#image-carousel', {
