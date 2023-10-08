@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+// import Image from 'next/image';
 
 export default function Home() {
     const [sku, setSku] = useState('');
@@ -42,7 +43,9 @@ export default function Home() {
             {productDetail && productDetail.item && (
     <div>
         <h2>{productDetail.item.title}</h2>
-        <img src={productDetail.item.image} alt={productDetail.item.title} /> {/* Make sure the image path is correct */}
+        {/* <img src={productDetail.item.image} alt={productDetail.item.title} /> */}
+        
+         {/* Make sure the image path is correct */}
         <p>Price: {productDetail.item.price}</p>
     </div>
 )}

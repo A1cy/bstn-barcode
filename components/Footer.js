@@ -31,7 +31,7 @@ function Footer() {
                 <p id="scan-footer">SCAN A NEW PRODUCT</p>
               </a>
 
-              {showScanner && (
+              {/* {showScanner && (
                 <div className="scanner-modal">
                   <div className="scanner-content">
                     <QrReader
@@ -43,7 +43,7 @@ function Footer() {
                     <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
                   </div>
                 </div>
-              )}
+              )} */}
 
             </div>
 
