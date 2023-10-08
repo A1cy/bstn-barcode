@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // import axios for making API requests
 import HeaderContentContainer from '../components/HeaderContentContainer';
-import ProductDetails from '../components/ProductDetails';
+import ProductDetail from '../components/ProductDetail';
 import AvailabilityStock from '../components/AvailabilityStock';
 import DescriptionSpecification from '../components/DescriptionSpecification';
 import ProductSlider from '../components/ProductSlider';
@@ -42,7 +42,7 @@ const ProductPage = ({ sku }) => {
       <HeaderContentContainer />
       <h1>Product Page for SKU: {sku}</h1>  
       {/* Pass productData to components that need it */}
-      <ProductDetails data={productData} />
+      <ProductDetail data={productData} />
       <AvailabilityStock data={productData} />
       <DescriptionSpecification data={productData} />
       <ProductSlider title="Related Products" data={productData} />
