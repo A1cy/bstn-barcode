@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import QRBarcodeScanner from 'react-qr-barcode-scanner';
+import QrReader from 'react-qr-reader';
 
 function Footer() {
   const [showScanner, setShowScanner] = useState(false);
@@ -10,9 +11,6 @@ function Footer() {
       setShowScanner(false); // Close the scanner after a successful scan
     }
   };
-  const handleUpdate = (data) => {
-     console.log('Update data:', data);
-  };
 
   const handleError = err => {
     console.error(err);
@@ -21,41 +19,40 @@ function Footer() {
 
   return (
     <footer>
+      {/* ... other components ... */}
       <div className="navbar">
-        <a href="#" className="active">
-          <img src="pics/home-icon.png" alt="home" />
-          <p id="home-footer">HOME</p>
-        </a>
+            <a href="#" className="active">
+                <img src="pics/home-icon.png" alt="home" />
+                <p id="home-footer">HOME</p>
+              </a>
+            <div className="scanner-section">
+              <a href="#" onClick={e => {e.preventDefault(); setShowScanner(true)}}>
+                <img src="pics/scan-icon.png" alt="scan" />
+                <p id="scan-footer">SCAN A NEW PRODUCT</p>
+              </a>
 
-        <div className="scanner-section">
-          <a href="#" onClick={e => {e.preventDefault(); setShowScanner(true)}}>
-            <img src="pics/scan-icon.png" alt="scan" />
-            <p id="scan-footer">SCAN A NEW PRODUCT</p>
-          </a>
+              {showScanner && (
+                <div className="scanner-modal">
+                  <div className="scanner-content">
+                    <QrReader
+                      delay={300}
+                      onError={handleError}
+                      onScan={handleScan}
+                      style={{ width: '100%' }}
+                    />
+                    <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
+                  </div>
+                </div>
+              )}
 
-          {showScanner && (
-            <div className="scanner-modal">
-              <div className="scanner-content">
-                <QRBarcodeScanner
-                  delay={300}
-                  onError={handleError}
-                  onScan={handleScan}
-                  onUpdate={handleUpdate}
-                  style={{ width: '100%' }}
-                />
-                <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
-              </div>
             </div>
-          )}
 
-        </div>
-
-        <a href="#">
-          <img src="pics/list-icon.png" alt="list" />
-          <p id="list-footer">LIST</p>
-        </a>
+            <a href="#">
+                <img src="pics/list-icon.png" alt="list" />
+                <p id="list-footer">LIST</p>
+              </a>
       </div>
-
+      {/* ... other components ... */}
       <div className="end-footer">
         <div id="left-end-footer">
           <a href="#" id="terms">Terms and Conditions</a>
