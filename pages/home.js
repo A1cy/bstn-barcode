@@ -37,12 +37,13 @@ export default function Home() {
       });
   };
 
-  const onScan = code => {
-    setSku(code.data);
-    handleSearch();
-  };
-
-  const { loading, error: scannerError, scan } = useZxing({ onScan });
+  const { ref } = useZxing({
+    onDecodeResult: (result) => {
+      setSku(result.getText());
+      handleSearch();
+    }
+  });
+  // const { loading, error: scannerError, scan } = useZxing({ onScan });
 
   return (
     <div className="container">
@@ -66,8 +67,7 @@ export default function Home() {
       {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
-            {loading ? <p>Loading...</p> : <video ref={scan} />}
-            {scannerError && <p>Error: {scannerError}</p>}
+            <video ref={ref} />
             <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
           </div>
         </div>
