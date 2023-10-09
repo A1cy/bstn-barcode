@@ -1,46 +1,41 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-// import Html5Qrcode from "html5-qrcode";
 import { Html5Qrcode } from 'html5-qrcode';
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
 import Image from 'next/image';
-
 
 export default function Home() {
   const [sku, setSku] = useState("");
   const [error, setError] = useState(null);
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
-
   const scannerRef = useRef(null);
-
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
   };
 
-
   const handleSearch = (e) => {
-    if (e) e.preventDefault(); // Prevent default form submission only if there's an event object
+    if (e) e.preventDefault();
     axios.post('/api/get-product', { sku })
-        
-        .then(response => {
-          if (response.data && response.data.slug && response.data.category) {
-              return axios.get(`/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`);
-          } else {
-              throw new Error('Product not found');
-          }
+      .then(response => {
+        if (response.data && response.data.slug && response.data.category) {
+          return axios.get(`/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`);
+        } else {
+          throw new Error('Product not found');
+        }
       })
       .then(detailResponse => {
         setProductDetail(detailResponse.data);
-        setError(null); // Clear error state upon successful search
+        setError(null);
       })
       .catch(err => {
         console.error(err);
         if (err.message === 'Product not found' || (err.response && err.response.status === 404)) {
-            setError('Product not found');
+          setError('Product not found');
         } else {
-            setError('Failed to fetch product');
+          setError('Failed to fetch product');
         }
       });
   };
@@ -59,7 +54,7 @@ export default function Home() {
             {
               fps: 10,
               qrbox: 250,
-              formatsToSupport: [
+              formatsToSupport: [ 
                 Html5QrcodeSupportedFormats.QR_CODE,
                 Html5QrcodeSupportedFormats.CODE128,
                 Html5QrcodeSupportedFormats.CODE39,
@@ -76,13 +71,15 @@ export default function Home() {
                 Html5QrcodeSupportedFormats.UPCA,
                 Html5QrcodeSupportedFormats.UPCE,
                 Html5QrcodeSupportedFormats.UPCEAN_EXTENSION,
+              
+              
               ]
             },
             qrCodeMessage => {
-              setSku(qrCodeMessage); // set SKU to the scanned code
-              handleSearch(); // you might need to adjust this function to work properly with the scanned code
-              html5QrCode.stop(); // stop the scanner
-              setShowScanner(false); // hide the scanner
+              setSku(qrCodeMessage);
+              handleSearch();
+              html5QrCode.stop();
+              setShowScanner(false);
             },
             errorMessage => {
               setError(errorMessage);
@@ -91,34 +88,32 @@ export default function Home() {
         }
       });
     }
-  
     return () => {
       if (html5QrCode) {
         html5QrCode.stop();
       }
     };
-  }, [showScanner]);
+  }, [showScanner, handleSearch]);  // Fixed dependency array
+
   return (
     <div className="container">
-            <header className="home-header">
-        <img src="pics/BuildStation-logo.png" alt="Logo"  className="logo"/>
+      <header className="home-header">
+        <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo"/> {/* Updated */}
       </header>
       <main className="home-main">
         <form onSubmit={handleSearch} className="sku-form">
           <input type="text" name="sku" value={sku} onChange={handleSkuChange} />
           <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Scan Barcode</button>
-          
         </form>
         {error && <p>{error}</p>}
         {productDetail && productDetail.item && (
           <div>
             <h2>{productDetail.item.title}</h2>
-            <img src={productDetail.item.image} alt={productDetail.item.title} />
+            <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150}/> {/* Updated */}
             <p>Price: {productDetail.item.price}</p>
           </div>
         )}
       </main>
-      {/* ... (rest of your JSX) */}
       {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
@@ -127,8 +122,6 @@ export default function Home() {
           </div>
         </div>
       )}
- </div>
+    </div>
   );
 }
-
- 
