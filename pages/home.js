@@ -101,7 +101,7 @@ export default function Home() {
   return (
     <div className="container">
             <header className="home-header">
-        <img src="pics/BuildStation-logo.png" alt="Logo"  width={WIDTH} height={HEIGHT} className="logo"/>
+        <img src="pics/BuildStation-logo.png" alt="Logo"  className="logo"/>
       </header>
       <main className="home-main">
         <form onSubmit={handleSearch} className="sku-form">
