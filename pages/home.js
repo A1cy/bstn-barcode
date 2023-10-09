@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useZxing } from 'react-zxing';
 
@@ -10,8 +10,9 @@ export default function Home() {
   const [showScanner, setShowScanner] = useState(false);
 
   const handleSkuChange = (e) => {
-    setSku(e.target.value); 
+    setSku(e.target.value);
   };
+
 
   const handleSearch = (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -37,20 +38,33 @@ export default function Home() {
       });
   };
 
-  const { ref } = useZxing({
+  const { ref, start, isSupported } = useZxing({
     onDecodeResult: (result) => {
-      console.log('Decode Result:', result); // Log the decode result
+      console.log('Decode Result:', result);
       setSku(result.getText());
       handleSearch();
     },
     onError: (err) => {
-      console.error('Decode Error:', err); // Log any decode errors
+      console.error('Decode Error:', err);
       setError("Error during scanning");
     }
   });
+
+  useEffect(() => {
+    if (isSupported) {
+      start();
+    } else {
+      setError("Camera not supported on this device");
+    }
+
+    return () => {
+      // Stop the camera here if necessary
+    };
+  }, [start, isSupported]);
+
   return (
     <div className="container">
-      <header className="home-header">
+            <header className="home-header">
         <img src="pics\BuildStation-logo.png" alt="Logo" className="logo"/>
       </header>
       <main className="home-main">
@@ -67,15 +81,19 @@ export default function Home() {
           </div>
         )}
       </main>
-      {showScanner && (
+      {/* ... (rest of your JSX) */}
+
+      {showScanner && isSupported && (
         <div className="scanner-modal">
           <div className="scanner-content">
-            <video ref={ref} onPlay={() => console.log('Camera is on')} /> {/* Log when the camera is on */}
+            <video ref={ref} onPlay={() => console.log('Camera is on')} />
             <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
           </div>
         </div>
       )}
-
+      {!isSupported && <p>Camera not supported on this device</p>}
     </div>
   );
 }
+
+ 
