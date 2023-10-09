@@ -39,12 +39,15 @@ export default function Home() {
 
   const { ref } = useZxing({
     onDecodeResult: (result) => {
+      console.log('Decode Result:', result); // Log the decode result
       setSku(result.getText());
       handleSearch();
+    },
+    onError: (err) => {
+      console.error('Decode Error:', err); // Log any decode errors
+      setError("Error during scanning");
     }
   });
-  // const { loading, error: scannerError, scan } = useZxing({ onScan });
-
   return (
     <div className="container">
       <header className="home-header">
@@ -67,11 +70,12 @@ export default function Home() {
       {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
-            <video ref={ref} />
+            <video ref={ref} onPlay={() => console.log('Camera is on')} /> {/* Log when the camera is on */}
             <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
           </div>
         </div>
       )}
+
     </div>
   );
 }
