@@ -1,13 +1,17 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useZxing } from 'react-zxing';
+// import Html5Qrcode from "html5-qrcode";
+import { Html5Qrcode } from 'html5-qrcode';
+
 
 export default function Home() {
   const [sku, setSku] = useState("");
   const [error, setError] = useState(null);
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
+
+  const scannerRef = useRef(null);
+
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
@@ -38,29 +42,39 @@ export default function Home() {
       });
   };
 
-  const { ref, start, isSupported } = useZxing({
-    onDecodeResult: (result) => {
-      console.log('Decode Result:', result);
-      setSku(result.getText());
-      handleSearch();
-    },
-    onError: (err) => {
-      console.error('Decode Error:', err);
-      setError("Error during scanning");
-    }
-  });
-
-  useEffect(() => {
-    if (isSupported) {
-      start();
-    } else {
-      setError("Camera not supported on this device");
+useEffect(() => {
+    let html5QrCode;
+    const scanner = scannerRef.current;
+    if (showScanner && scanner) {
+      Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length) {
+          const cameraId = devices[0].id; 
+          html5QrCode = new Html5Qrcode(scanner.id);
+          html5QrCode.start(
+            cameraId,
+            {
+              fps: 10,
+              qrbox: 250  
+            },
+            qrCodeMessage => {
+              setSku(qrCodeMessage);
+              handleSearch();
+              html5QrCode.stop();
+            },
+            errorMessage => {
+              setError(errorMessage);
+            }
+          ).catch(err => setError(err));
+        }
+      });
     }
 
     return () => {
-      // Stop the camera here if necessary
+      if (html5QrCode) {
+        html5QrCode.stop();
+      }
     };
-  }, [start, isSupported]);
+  }, [showScanner]);
 
   return (
     <div className="container">
@@ -71,6 +85,7 @@ export default function Home() {
         <form onSubmit={handleSearch} className="sku-form">
           <input type="text" name="sku" value={sku} onChange={handleSkuChange} />
           <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Scan Barcode</button>
+          
         </form>
         {error && <p>{error}</p>}
         {productDetail && productDetail.item && (
@@ -82,17 +97,15 @@ export default function Home() {
         )}
       </main>
       {/* ... (rest of your JSX) */}
-
-      {showScanner && isSupported && (
+      {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
-            <video ref={ref} onPlay={() => console.log('Camera is on')} />
+            <div id="qr-reader" ref={scannerRef}></div>
             <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
           </div>
         </div>
       )}
-      {!isSupported && <p>Camera not supported on this device</p>}
-    </div>
+ </div>
   );
 }
 
