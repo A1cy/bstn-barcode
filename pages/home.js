@@ -3,6 +3,7 @@ import axios from "axios";
 // import Html5Qrcode from "html5-qrcode";
 import { Html5Qrcode } from 'html5-qrcode';
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
+import Image from 'next/image';
 
 
 export default function Home() {
@@ -100,7 +101,7 @@ export default function Home() {
   return (
     <div className="container">
             <header className="home-header">
-        <img src="pics\BuildStation-logo.png" alt="Logo" className="logo"/>
+        <img src="pics/BuildStation-logo.png" alt="Logo"  width={WIDTH} height={HEIGHT} className="logo"/>
       </header>
       <main className="home-main">
         <form onSubmit={handleSearch} className="sku-form">
