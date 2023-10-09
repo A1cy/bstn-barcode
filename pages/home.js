@@ -20,9 +20,9 @@ export default function Home() {
 
 
   const handleSearch = (e) => {
-    e.preventDefault(); // Prevent default form submission
+    if (e) e.preventDefault(); // Prevent default form submission only if there's an event object
     axios.post('/api/get-product', { sku })
-        // ... (rest of your axios calls)
+        
         .then(response => {
           if (response.data && response.data.slug && response.data.category) {
               return axios.get(`/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`);
@@ -31,15 +31,16 @@ export default function Home() {
           }
       })
       .then(detailResponse => {
-          setProductDetail(detailResponse.data);
+        setProductDetail(detailResponse.data);
+        setError(null); // Clear error state upon successful search
       })
       .catch(err => {
-          console.error(err);
-          if (err.message === 'Product not found' || (err.response && err.response.status === 404)) {
-              setError('Product not found');
-          } else {
-              setError('Failed to fetch product');
-          }
+        console.error(err);
+        if (err.message === 'Product not found' || (err.response && err.response.status === 404)) {
+            setError('Product not found');
+        } else {
+            setError('Failed to fetch product');
+        }
       });
   };
 
