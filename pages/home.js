@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 // import Html5Qrcode from "html5-qrcode";
 import { Html5Qrcode } from 'html5-qrcode';
+import { Html5QrcodeSupportedFormats } from "html5-qrcode";
 
 
 export default function Home() {
@@ -43,25 +44,43 @@ export default function Home() {
   };
 
   useEffect(() => {
-    let html5QrCode; // Define html5QrCode here so it can be accessed in the cleanup function
     const scanner = scannerRef.current;
+    let html5QrCode;
     if (showScanner && scanner) {
       Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length) {
           const backCamera = devices.find(device => device.label.toLowerCase().includes('back'));
-          const cameraId = backCamera ? backCamera.id : devices[0].id; // Use back camera if available, otherwise use the first camera
+          const cameraId = backCamera ? backCamera.id : devices[0].id;
           html5QrCode = new Html5Qrcode(scanner.id);
           html5QrCode.start(
             cameraId,
             {
               fps: 10,
-              qrbox: 250
+              qrbox: 250,
+              formatsToSupport: [
+                Html5QrcodeSupportedFormats.QR_CODE,
+                Html5QrcodeSupportedFormats.CODE128,
+                Html5QrcodeSupportedFormats.CODE39,
+                Html5QrcodeSupportedFormats.CODE93,
+                Html5QrcodeSupportedFormats.CODABAR,
+                Html5QrcodeSupportedFormats.DATA_MATRIX,
+                Html5QrcodeSupportedFormats.EAN13,
+                Html5QrcodeSupportedFormats.EAN8,
+                Html5QrcodeSupportedFormats.ITF,
+                Html5QrcodeSupportedFormats.MAXICODE,
+                Html5QrcodeSupportedFormats.PDF417,
+                Html5QrcodeSupportedFormats.RSS14,
+                Html5QrcodeSupportedFormats.RSSEXPANDED,
+                Html5QrcodeSupportedFormats.UPCA,
+                Html5QrcodeSupportedFormats.UPCE,
+                Html5QrcodeSupportedFormats.UPCEAN_EXTENSION,
+              ]
             },
             qrCodeMessage => {
-              setSku(qrCodeMessage);
-              handleSearch();
-              html5QrCode.stop(); // Stop scanning and close the camera
-              setShowScanner(false); // Hide the scanner
+              setSku(qrCodeMessage); // set SKU to the scanned code
+              handleSearch(); // you might need to adjust this function to work properly with the scanned code
+              html5QrCode.stop(); // stop the scanner
+              setShowScanner(false); // hide the scanner
             },
             errorMessage => {
               setError(errorMessage);
@@ -73,11 +92,10 @@ export default function Home() {
   
     return () => {
       if (html5QrCode) {
-        html5QrCode.stop(); // This will stop the camera when the component is unmounted or when showScanner becomes false
+        html5QrCode.stop();
       }
     };
   }, [showScanner]);
-  
   return (
     <div className="container">
             <header className="home-header">
