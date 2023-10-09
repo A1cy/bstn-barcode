@@ -1922,3 +1922,8 @@ button.user-log{
 .discount {
   color: #4CAF50;
 }
+
+video { 
+  width: 100%!important;
+  height: 100%;
+}
