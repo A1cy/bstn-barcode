@@ -42,25 +42,26 @@ export default function Home() {
       });
   };
 
-useEffect(() => {
-    let html5QrCode;
+  useEffect(() => {
+    let html5QrCode; // Define html5QrCode here so it can be accessed in the cleanup function
     const scanner = scannerRef.current;
     if (showScanner && scanner) {
       Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length) {
           const backCamera = devices.find(device => device.label.toLowerCase().includes('back'));
-          const cameraId = backCamera ? backCamera.id : devices[0].id; 
+          const cameraId = backCamera ? backCamera.id : devices[0].id; // Use back camera if available, otherwise use the first camera
           html5QrCode = new Html5Qrcode(scanner.id);
           html5QrCode.start(
             cameraId,
             {
               fps: 10,
-              qrbox: 250  
+              qrbox: 250
             },
             qrCodeMessage => {
               setSku(qrCodeMessage);
               handleSearch();
-              html5QrCode.stop();
+              html5QrCode.stop(); // Stop scanning and close the camera
+              setShowScanner(false); // Hide the scanner
             },
             errorMessage => {
               setError(errorMessage);
@@ -69,14 +70,14 @@ useEffect(() => {
         }
       });
     }
-
+  
     return () => {
       if (html5QrCode) {
-        html5QrCode.stop();
+        html5QrCode.stop(); // This will stop the camera when the component is unmounted or when showScanner becomes false
       }
     };
   }, [showScanner]);
-
+  
   return (
     <div className="container">
             <header className="home-header">
