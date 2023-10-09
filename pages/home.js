@@ -48,7 +48,8 @@ useEffect(() => {
     if (showScanner && scanner) {
       Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length) {
-          const cameraId = devices[0].id; 
+          const backCamera = devices.find(device => device.label.toLowerCase().includes('back'));
+          const cameraId = backCamera ? backCamera.id : devices[0].id; 
           html5QrCode = new Html5Qrcode(scanner.id);
           html5QrCode.start(
             cameraId,
