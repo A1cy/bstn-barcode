@@ -55,8 +55,9 @@ export default function Home() {
           html5QrCode.start(
             cameraId,
             {
-              fps: 10,
-              qrbox: 250,
+              fps: 20,
+              qrbox: 350,
+              aspectRatio: 1.0, // Set aspect ratio to be square
               formatsToSupport: [ 
                 Html5QrcodeSupportedFormats.QR_CODE,
                 Html5QrcodeSupportedFormats.CODE128,
