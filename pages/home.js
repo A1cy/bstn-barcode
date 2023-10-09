@@ -44,10 +44,13 @@ export default function Home() {
     const scanner = scannerRef.current;
     let html5QrCode;
     if (showScanner && scanner) {
+      console.log("Initializing scanner...");  // Debugging line
       Html5Qrcode.getCameras().then(devices => {
+        console.log("Devices found:", devices);  // Debugging line
         if (devices && devices.length) {
           const backCamera = devices.find(device => device.label.toLowerCase().includes('back'));
           const cameraId = backCamera ? backCamera.id : devices[0].id;
+          console.log("Using camera:", cameraId);  // Debugging line
           html5QrCode = new Html5Qrcode(scanner.id);
           html5QrCode.start(
             cameraId,
@@ -76,16 +79,24 @@ export default function Home() {
               ]
             },
             qrCodeMessage => {
+              console.log("QR Code scanned:", qrCodeMessage);  // Debugging line
               setSku(qrCodeMessage);
               handleSearch();
               html5QrCode.stop();
               setShowScanner(false);
             },
             errorMessage => {
+              console.error("Scanner error:", errorMessage);  // Debugging line
               setError(errorMessage);
             }
-          ).catch(err => setError(err));
+          ).catch(err => {
+            console.error("Scanner initialization error:", err);  // Debugging line
+            setError(err);
+          });
         }
+      }).catch(err => {
+        console.error("Error getting devices:", err);  // Debugging line
+        setError("Error initializing scanner");
       });
     }
     return () => {
@@ -93,7 +104,7 @@ export default function Home() {
         html5QrCode.stop();
       }
     };
-  }, [showScanner, handleSearch]);  // Fixed dependency array
+  }, [showScanner, handleSearch]);
 
   return (
     <div className="container">
@@ -125,3 +136,6 @@ export default function Home() {
     </div>
   );
 }
+
+
+
