@@ -1840,10 +1840,11 @@ button.user-log{
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
   z-index: 1000;
+  justify-content: flex-start;
 }
 
 .scanner-content {
-
+  width: 300px;
   background-color: #fff;
    flex-direction: column;
   border-radius: 10px;
@@ -1924,6 +1925,6 @@ button.user-log{
 }
 
 video { 
-  width: 50%!important;
+  width: 100%!important;
  
 }
