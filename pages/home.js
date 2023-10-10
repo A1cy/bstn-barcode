@@ -40,17 +40,28 @@ export default function Home() {
       });
   };
 
-  const startScanner = () => {
+const startScanner = () => {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
       .then(stream => {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-        requestAnimationFrame(tick);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+          requestAnimationFrame(tick);
+        }
       })
       .catch(err => {
-        setError("Failed to access camera");
+        console.error(err);
+        setError("Failed to access camera. Please ensure camera permissions are granted and the device is compatible.");
       });
-  };
+  } else {
+    setError("Your browser or device does not support camera access for scanning. Please use a different device or update your browser.");
+  }
+};
+
+
+
+
 
   const tick = () => {
     if (videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
