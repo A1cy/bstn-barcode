@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import jsQR from "jsqr";
-import NextImage from 'next/image'; // Aliased import
+import Image from 'next/image';
 import Webcam from "react-webcam";
 
 
@@ -82,11 +82,10 @@ useEffect(() => {
     };
 }, [showScanner, capture]);
  
- 
-  return (
-    <div className="container">
+return (
+  <div className="container">
     <header className="home-header">
-    <NextImage src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo"/> 
+      <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo"/> 
     </header>
     <main className="home-main">
       <form onSubmit={handleSearch} className="sku-form">
@@ -97,7 +96,7 @@ useEffect(() => {
       {productDetail && productDetail.item && (
         <div>
           <h2>{productDetail.item.title}</h2>
-          <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150}/> {/* Updated */}
+          <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150}/> {/* Corrected */}
           <p>Price: {productDetail.item.price}</p>
         </div>
       )}
@@ -116,8 +115,8 @@ useEffect(() => {
         </div>
       )}
   </div>
-  );
+);
 }
- 
 
  
+  
