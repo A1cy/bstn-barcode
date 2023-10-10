@@ -1844,7 +1844,6 @@ button.user-log{
 }
 
 .scanner-content {
-  width: 300px;
   background-color: #ffffff77;
    flex-direction: column;
   border-radius: 10px;
@@ -1926,5 +1925,6 @@ button.user-log{
 
 video { 
   width: 100%!important;
+  height: 100%!important;
  
 }
