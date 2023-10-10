@@ -108,6 +108,9 @@ return (
               audio={false}
               ref={webcamRef}
               screenshotFormat="image/jpeg"
+              videoConstraints={{
+                facingMode: 'environment'
+              }}
               onUserMedia={() => setInterval(capture, 300)}
             />
             <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
