@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import jsQR from "jsqr";
-import Image from 'next/image';
+import NextImage from 'next/image'; // Aliased import
+import Webcam from "react-webcam";
+
 
 export default function Home() {
   const [sku, setSku] = useState("");
   const [error, setError] = useState(null);
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+  const webcamRef = useRef(null);
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
@@ -39,70 +40,53 @@ export default function Home() {
         }
       });
   };
+ 
+  const capture = useCallback(() => {
+    if (webcamRef.current) {
+        const imageSrc = webcamRef.current.getScreenshot();
 
-const startScanner = () => {
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then(stream => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-          requestAnimationFrame(tick);
+        if (imageSrc) {
+            const image = new window.Image();
+            image.src = imageSrc;
+            image.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                const context = canvas.getContext('2d');
+                context.drawImage(image, 0, 0);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
+                if (code) {
+                    setSku(code.data);
+                    handleSearch(null, code.data);
+                    setShowScanner(false);
+                } else {
+                    requestAnimationFrame(capture);
+                }
+            };
         }
-      })
-      .catch(err => {
-        console.error(err);
-        setError("Failed to access camera. Please ensure camera permissions are granted and the device is compatible.");
-      });
-  } else {
-    setError("Your browser or device does not support camera access for scanning. Please use a different device or update your browser.");
-  }
-};
-
-
-
-
-
-  const tick = () => {
-    if (videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      const context = canvas.getContext("2d");
-      canvas.height = video.videoHeight;
-      canvas.width = video.videoWidth;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
-      if (code) {
-        setSku(code.data);
-        handleSearch();
-        setShowScanner(false);
-        videoRef.current.pause();
-        if (videoRef.current && videoRef.current.srcObject) {
-          videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-        }
-      } else {
-        requestAnimationFrame(tick);
-      }
-    } else {
-      if(videoRef.current) {
-        requestAnimationFrame(tick);
-      }
     }
-  };
-  
-  useEffect(() => {
+}, [webcamRef, handleSearch]);
+
+useEffect(() => {
+    let animationFrameId;
+
     if (showScanner) {
-      startScanner();
+        animationFrameId = requestAnimationFrame(capture);
     }
-  }, [showScanner]);
-  
 
-  // ... (render logic)
+    return () => {
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
+    };
+}, [showScanner, capture]);
+ 
+ 
   return (
     <div className="container">
     <header className="home-header">
-      <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo"/> {/* Updated */}
+    <NextImage src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo"/> 
     </header>
     <main className="home-main">
       <form onSubmit={handleSearch} className="sku-form">
@@ -119,21 +103,21 @@ const startScanner = () => {
       )}
     </main>
     {showScanner && (
-      <div className="scanner-modal">
-        <div className="scanner-content">
-          <video ref={videoRef} style={{ width: '100%' }}></video>
-          <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
-          <button className="close-button" onClick={() => {
-            setShowScanner(false);
-            videoRef.current.pause();
-            if (videoRef.current.srcObject) {
-              videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-            }
-          }}>Close</button>
+        <div className="scanner-modal">
+          <div className="scanner-content">
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              onUserMedia={() => setInterval(capture, 300)}
+            />
+            <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
+          </div>
         </div>
-      </div>
-    )}
+      )}
   </div>
   );
 }
+ 
 
+ 
