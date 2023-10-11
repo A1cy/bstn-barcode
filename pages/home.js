@@ -1,17 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
-import { 
-  BarcodeFormat, 
-  BinaryBitmap, 
-  HybridBinarizer, 
-  MultiFormatReader, 
-  RGBLuminanceSource, 
-  DecodeHintType,
-  NotFoundException 
-} from '@zxing/library';
+import jsQR from "jsqr";
+import Quagga from "quagga";
 import Image from 'next/image';
 import Webcam from "react-webcam";
-
 
 
 export default function Home() {
@@ -19,13 +11,10 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
+  const [scanMode, setScanMode] = useState('QR');
   const webcamRef = useRef(null);
+  const quaggaContainerRef = useRef(null);
 
-  const multiFormatReader = new MultiFormatReader();
-  const hints = new Map();
-  const formats = [BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39, BarcodeFormat.CODE_128];
-  hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
-  multiFormatReader.setHints(hints);
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
@@ -55,90 +44,119 @@ export default function Home() {
         }
       });
   };
-  const capture = useCallback(() => {
-    if (webcamRef.current) {
-        const imageSrc = webcamRef.current.getScreenshot();
-        if (imageSrc) {
-            const image = new window.Image();
-            image.src = imageSrc;
-            image.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = image.width;
-                canvas.height = image.height;
-                const context = canvas.getContext('2d');
-                context.drawImage(image, 0, 0);
-                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                const luminanceSource = new RGBLuminanceSource(imageData.data, canvas.width, canvas.height);
-                const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
-                try {
-                    const result = multiFormatReader.decode(binaryBitmap);
-                    setSku(result.getText());
-                    handleSearch(null, result.getText());
-                    setShowScanner(false);
-                } catch (error) {
-                    if (error instanceof NotFoundException) {
-                        console.log('Code not found, retrying...');
-                        requestAnimationFrame(capture);  // Use requestAnimationFrame for smoother repeated calls
-                    } else {
-                        console.error('Unexpected error during code scanning:', error);
-                    }
-                }
-            };
-        }
-    }
-}, [webcamRef, handleSearch]);
 
-useEffect(() => {
-    let animationFrameId;
-    if (showScanner) {
-        animationFrameId = requestAnimationFrame(capture);  // Start the scanning loop with requestAnimationFrame
+  const captureQR = useCallback(() => {
+    if (webcamRef.current) {
+      const imageSrc = webcamRef.current.getScreenshot();
+  
+      if (imageSrc) {
+        const image = new window.Image();
+        image.src = imageSrc;
+        image.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = image.width;
+          canvas.height = image.height;
+          const context = canvas.getContext('2d');
+          context.drawImage(image, 0, 0);
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, canvas.width, canvas.height);
+          if (code) {
+            setSku(code.data);
+            handleSearch(null, code.data);
+            setShowScanner(false);
+          } else {
+            requestAnimationFrame(captureQR); // retry if no code is found
+          }
+        };
+      }
     }
-    return () => {
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);  // Cancel the scanning loop when the component is unmounted or the scanner is closed
-        }
-    };
-}, [showScanner, capture]);
-      
+  }, [webcamRef, handleSearch, setSku, setShowScanner]);
+  
+  const captureBarcode = useCallback(() => {
+    Quagga.init({
+      inputStream: {
+        type: 'LiveStream',
+        constraints: {
+          facingMode: 'environment' // Adjust as needed
+        },
+        target: quaggaContainerRef.current // This is where your live stream will be appended
+      },
+      decoder: {
+        readers: ['code_128_reader', 'ean_reader']
+      }
+    }, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      Quagga.start();
+
+      Quagga.onDetected((result) => {
+        console.log(result.codeResult.code);
+        setSku(result.codeResult.code);
+        handleSearch(null, result.codeResult.code);
+        setShowScanner(false);
+        Quagga.stop(); // Important to release camera
+      });
+    });
+  }, [handleSearch, setSku, setShowScanner]);
+  
+  useEffect(() => {
+    if (showScanner) {
+      if (scanMode === 'QR') {
+        captureQR();
+      } else if (scanMode === 'BARCODE') {
+        captureBarcode();
+      }
+    }
+  }, [showScanner, captureQR, captureBarcode]);
+
  
-return (
-  <div className="container">
-    <header className="home-header">
-      <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo"/> 
-    </header>
-    <main className="home-main">
-      <form onSubmit={handleSearch} className="sku-form">
-        <input type="text" name="sku" value={sku} onChange={handleSkuChange} />
-        <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Scan Barcode</button>
-      </form>
-      {error && <p>{error}</p>}
-      {productDetail && productDetail.item && (
-        <div>
-          <h2>{productDetail.item.title}</h2>
-          <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150}/> {/* Corrected */}
-          <p>Price: {productDetail.item.price}</p>
-        </div>
-      )}
-    </main>
-    {showScanner && (
+  return (
+    <div className="container">
+      <header className="home-header">
+        <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo"/> 
+      </header>
+      <main className="home-main">
+        <form onSubmit={handleSearch} className="sku-form">
+          <input type="text" name="sku" value={sku} onChange={handleSkuChange} />
+          <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Scan Barcode</button>
+        </form>
+        {error && <p>{error}</p>}
+        {productDetail && productDetail.item && (
+          <div>
+            <h2>{productDetail.item.title}</h2>
+            <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150}/>
+            <p>Price: {productDetail.item.price}</p>
+          </div>
+        )}
+      </main>
+      {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              videoConstraints={{
-                facingMode: 'environment'
-              }}
-              onUserMedia={() => setInterval(capture, 300)}
-            />
+            <div ref={quaggaContainerRef}></div>
+            {scanMode === 'QR' && (
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                videoConstraints={{ facingMode: 'environment' }}
+              />
+            )}
+            <button onClick={() => setScanMode('QR')}>Scan QR Code</button>
+            <button onClick={() => setScanMode('BARCODE')}>Scan Barcode</button>
             <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
           </div>
         </div>
       )}
-  </div>
-);
+    </div>
+  );
 }
 
  
  
+
+  
+
+
+  
