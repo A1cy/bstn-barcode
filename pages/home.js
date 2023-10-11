@@ -11,9 +11,8 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
-  const [scanMode, setScanMode] = useState('QR');
+  const [scanMode, setScanMode] = useState('QR'); // Initial scanning mode
   const webcamRef = useRef(null);
-  const quaggaContainerRef = useRef(null);
 
 
   const handleSkuChange = (e) => {
@@ -48,7 +47,6 @@ export default function Home() {
   const captureQR = useCallback(() => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
-  
       if (imageSrc) {
         const image = new window.Image();
         image.src = imageSrc;
@@ -65,42 +63,54 @@ export default function Home() {
             handleSearch(null, code.data);
             setShowScanner(false);
           } else {
-            requestAnimationFrame(captureQR); // retry if no code is found
+            requestAnimationFrame(captureQR);
           }
         };
       }
     }
-  }, [webcamRef, handleSearch, setSku, setShowScanner]);
-  
-  const captureBarcode = useCallback(() => {
-    Quagga.init({
-      inputStream: {
-        type: 'LiveStream',
-        constraints: {
-          facingMode: 'environment' // Adjust as needed
-        },
-        target: quaggaContainerRef.current // This is where your live stream will be appended
-      },
-      decoder: {
-        readers: ['code_128_reader', 'ean_reader']
-      }
-    }, (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      Quagga.start();
+  }, [webcamRef, handleSearch]);
 
-      Quagga.onDetected((result) => {
-        console.log(result.codeResult.code);
-        setSku(result.codeResult.code);
-        handleSearch(null, result.codeResult.code);
-        setShowScanner(false);
-        Quagga.stop(); // Important to release camera
-      });
-    });
-  }, [handleSearch, setSku, setShowScanner]);
+
+  const captureBarcode = useCallback(() => {
+    if (webcamRef.current && webcamRef.current.video) {
+      const videoElement = webcamRef.current.video;
   
+      Quagga.init({
+        inputStream: {
+          type: 'LiveStream',
+          target: videoElement // Reference to the video element of the Webcam component
+        },
+        decoder: {
+          readers: ['code_128_reader', 'ean_reader'] // Add the readers you need
+        }
+      }, function(err) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log('Initialization finished. Ready to start');
+        Quagga.start();
+  
+        Quagga.onDetected((result) => {
+          console.log(result.codeResult.code);
+          setSku(result.codeResult.code);
+          handleSearch(null, result.codeResult.code);
+          setShowScanner(false);
+          Quagga.stop(); // Stop Quagga after a barcode is detected
+        });
+      });
+    }
+  }, [webcamRef, handleSearch, setSku, setShowScanner]);
+
+  useEffect(() => {
+    if (showScanner) {
+      const intervalId = setInterval(() => {
+        setScanMode((prevMode) => (prevMode === 'QR' ? 'BARCODE' : 'QR'));
+      }, 1000); // Switch mode every second or adjust as needed
+      return () => clearInterval(intervalId);
+    }
+  }, [showScanner]);
+
   useEffect(() => {
     if (showScanner) {
       if (scanMode === 'QR') {
@@ -109,9 +119,8 @@ export default function Home() {
         captureBarcode();
       }
     }
-  }, [showScanner, captureQR, captureBarcode]);
+  }, [showScanner, scanMode, captureQR, captureBarcode]);
 
- 
   return (
     <div className="container">
       <header className="home-header">
@@ -120,7 +129,7 @@ export default function Home() {
       <main className="home-main">
         <form onSubmit={handleSearch} className="sku-form">
           <input type="text" name="sku" value={sku} onChange={handleSkuChange} />
-          <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Scan Barcode</button>
+          <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Start Scanning</button>
         </form>
         {error && <p>{error}</p>}
         {productDetail && productDetail.item && (
@@ -134,29 +143,26 @@ export default function Home() {
       {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
-            <div ref={quaggaContainerRef}></div>
-            {scanMode === 'QR' && (
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                videoConstraints={{ facingMode: 'environment' }}
-              />
-            )}
-            <button onClick={() => setScanMode('QR')}>Scan QR Code</button>
-            <button onClick={() => setScanMode('BARCODE')}>Scan Barcode</button>
-            <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
+           
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{ facingMode: 'environment' }}
+              onUserMedia={() => {
+                if (scanMode === 'BARCODE') {
+                  captureBarcode();
+                }
+              }}
+            />
+
+            <button className="close-button" onClick={() => setShowScanner(false)}>Close Scanner</button>
           </div>
         </div>
       )}
     </div>
   );
+  
 }
 
- 
- 
 
-  
-
-
-  
