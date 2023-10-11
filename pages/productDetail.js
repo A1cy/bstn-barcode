@@ -1,17 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import Image from 'next/image';
 
-export default function ProductDetail() {
+import HeaderContentContainer from '../components/HeaderContentContainer';
+import ProductDetail from '../components/ProductDetail';
+import AvailabilityStock from '../components/AvailabilityStock';
+import DescriptionSpecification from '../components/DescriptionSpecification';
+import ProductSlider from '../components/ProductSlider';
+import Footer from '../components/Footer';
+
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+
+export default function ProductDetailPage() {
    const router = useRouter();
    const { sku } = router.query;
-   const [productDetail, setProductDetail] = useState(null);
+   const [productData, setProductData] = useState(null);
    const [error, setError] = useState(null);
  
    useEffect(() => {
      if (sku) {
-       // Fetch product details with the provided SKU
        axios.post('/api/get-product', { sku })
          .then(response => {
            if (response.data && response.data.slug && response.data.category) {
@@ -21,24 +29,27 @@ export default function ProductDetail() {
            }
          })
          .then(detailResponse => {
-           setProductDetail(detailResponse.data);
+           setProductData(detailResponse.data);
          })
          .catch(err => {
            console.error(err);
            setError('Failed to fetch product details');
          });
      }
-   }, [sku]);  // Re-run effect when SKU changes
- 
+   }, [sku]);
+
    if (error) return <p>{error}</p>;
-   if (!productDetail) return <p>Loading...</p>;
+   if (!productData) return <p>Loading...</p>;
  
    return (
-     <div>
-       {/* Render product details here */}
-       <h1>{productDetail.item.title}</h1>
-       <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150} />
-       {/* Render other product details... */}
-     </div>
-   );
+    <div>
+      {/* <HeaderContentContainer /> */}
+      {/* <h1>Product Page for SKU: {sku}</h1>   */}
+      <ProductDetail data={productData} />
+      <AvailabilityStock data={productData} />
+      <DescriptionSpecification data={productData} />
+      <ProductSlider title="Related Products" data={productData.relatedProducts} />
+      <Footer />
+    </div>
+  );
 }

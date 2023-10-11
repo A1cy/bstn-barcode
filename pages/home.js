@@ -152,7 +152,11 @@ export default function Home() {
     }
     setShowScanner(false);
   }, []);
+
+
   
+
+
   return (
     <div className="container">
       <header className="home-header">
@@ -179,17 +183,30 @@ export default function Home() {
           <button className="submit" onClick={handleSearch}>SUBMIT</button>
         </div>
         <div id="output">
-          {error && <p className="error-message">{error}</p>}
-          
-          {productDetail && productDetail.item && (
-          <div className="product-details">
-            <h2><strong>Product Name:</strong> {productDetail.item.title}</h2>
-            <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150} />
-            <p>Price: {productDetail.item.price}</p>
-            <button onClick={() => router.push(`/productDetail?sku=${sku}`)}>View Full Details</button>
-          </div>
-            )}
-        </div>
+  {error && <p className="error-message">{error}</p>}
+  
+  {
+    productDetail && productDetail.item && productDetail.meta_data && (
+      <div className="product-details">
+        <h2><strong>Product Name:</strong> {productDetail.item.title}</h2>
+
+        <Image 
+src={`https://dyq4yrh81omo6.cloudfront.net/items/290/${productDetail.meta_data.image.replace('items/', '')}`}
+alt={productDetail.meta_data.image_alt || productDetail.item.title} 
+  width={150} 
+  height={150} 
+/>
+
+
+        <p>Price: {productDetail.item.price}</p>
+        {/* <h3>{productDetail.meta_data.meta_title}</h3> */}
+        <p>{productDetail.meta_data.meta_description}</p>
+        <button onClick={() => router.push(`/productDetail?sku=${sku}`)}>View Full Details</button>
+      </div>
+    )
+  }
+</div>
+
       </div>
      
       {showScanner && (

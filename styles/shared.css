@@ -1242,6 +1242,7 @@ tr:nth-child(even) {
       } 
       .container img{
         width:100%;
+        height: auto;
       }
 
           .gray{
