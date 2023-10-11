@@ -1,17 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
-import { 
-  BarcodeFormat, 
-  BinaryBitmap, 
-  HybridBinarizer, 
-  MultiFormatReader, 
-  RGBLuminanceSource, 
-  DecodeHintType,
-  NotFoundException 
-} from '@zxing/library';
+import jsQR from "jsqr";
 import Image from 'next/image';
 import Webcam from "react-webcam";
-
 
 
 export default function Home() {
@@ -20,12 +11,6 @@ export default function Home() {
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
   const webcamRef = useRef(null);
-
-  const multiFormatReader = new MultiFormatReader();
-  const hints = new Map();
-  const formats = [BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39, BarcodeFormat.CODE_128];
-  hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
-  multiFormatReader.setHints(hints);
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
@@ -58,38 +43,44 @@ export default function Home() {
  
   const capture = useCallback(() => {
     if (webcamRef.current) {
-      const imageSrc = webcamRef.current.getScreenshot();
-      if (imageSrc) {
-        const image = new window.Image();
-        image.src = imageSrc;
-        image.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = image.width;
-          canvas.height = image.height;
-          const context = canvas.getContext('2d');
-          context.drawImage(image, 0, 0);
-          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-          const luminanceSource = new RGBLuminanceSource(imageData.data, canvas.width, canvas.height);
-          const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
-          try {
-            const result = multiFormatReader.decode(binaryBitmap);
-            setSku(result.getText());
-            handleSearch(null, result.getText());
-            setShowScanner(false);
-          } catch (error) {
-            if (error instanceof NotFoundException) {
-              console.error('Code not found, retrying...'); // or handle as you see fit
-              requestAnimationFrame(capture);
-            } else {
-              console.error('Unexpected error during code scanning:', error);
-            }
-          }
-        };
-      }
+        const imageSrc = webcamRef.current.getScreenshot();
+
+        if (imageSrc) {
+            const image = new window.Image();
+            image.src = imageSrc;
+            image.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                const context = canvas.getContext('2d');
+                context.drawImage(image, 0, 0);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
+                if (code) {
+                    setSku(code.data);
+                    handleSearch(null, code.data);
+                    setShowScanner(false);
+                } else {
+                    requestAnimationFrame(capture);
+                }
+            };
+        }
     }
-  }, [webcamRef, handleSearch]);
+}, [webcamRef, handleSearch]);
 
+useEffect(() => {
+    let animationFrameId;
 
+    if (showScanner) {
+        animationFrameId = requestAnimationFrame(capture);
+    }
+
+    return () => {
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
+    };
+}, [showScanner, capture]);
  
 return (
   <div className="container">
@@ -131,4 +122,4 @@ return (
 }
 
  
- 
+  
