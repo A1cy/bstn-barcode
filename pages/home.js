@@ -4,6 +4,8 @@ import jsQR from "jsqr";
 import Quagga from "quagga";
 import Image from "next/image";
 import Webcam from "react-webcam";
+import { useRouter } from 'next/router'; // <-- Add this import
+
 
 export default function Home() {
   const [sku, setSku] = useState("");
@@ -13,6 +15,8 @@ export default function Home() {
   const [scanMode, setScanMode] = useState("QR"); // Initial scanning mode
   const webcamRef = useRef(null);
   const [showInstructions, setShowInstructions] = useState(true);
+
+  const router = useRouter(); // <-- Initialize the router object using useRouter hook
 
 
   const handleSkuChange = (e) => {
@@ -118,6 +122,7 @@ export default function Home() {
       );
     }
   }, [webcamRef, handleSearch, setSku, setShowScanner]);
+
   useEffect(() => {
     if (showScanner) {
       const intervalId = setInterval(() => {
@@ -137,6 +142,17 @@ export default function Home() {
     }
   }, [showScanner, scanMode, captureQR, captureBarcode]); // Corrected dependencies
 
+
+  const closeScanner = useCallback(() => {
+    if (webcamRef.current && webcamRef.current.stream) {
+      const tracks = webcamRef.current.stream.getTracks();
+      tracks.forEach((track) => {
+        track.stop();
+      });
+    }
+    setShowScanner(false);
+  }, []);
+  
   return (
     <div className="container">
       <header className="home-header">
@@ -164,13 +180,15 @@ export default function Home() {
         </div>
         <div id="output">
           {error && <p className="error-message">{error}</p>}
+          
           {productDetail && productDetail.item && (
-            <div className="product-details">
-              <h2><strong>Product Name:</strong> {productDetail.item.title}</h2>
-              <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150} />
-              <p>Price: {productDetail.item.price}</p>
-            </div>
-          )}
+          <div className="product-details">
+            <h2><strong>Product Name:</strong> {productDetail.item.title}</h2>
+            <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150} />
+            <p>Price: {productDetail.item.price}</p>
+            <button onClick={() => router.push(`/productDetail?sku=${sku}`)}>View Full Details</button>
+          </div>
+            )}
         </div>
       </div>
      
@@ -188,7 +206,7 @@ export default function Home() {
                 }
               }}
             />
-            <button className="close-button" onClick={() => setShowScanner(false)}>Close Scanner</button>
+            <button className="close-button" onClick={closeScanner}>Close Scanner</button>
           </div>
         </div>
       )}
@@ -196,3 +214,4 @@ export default function Home() {
   );
   
 }
+
