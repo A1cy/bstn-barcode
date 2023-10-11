@@ -135,67 +135,36 @@ export default function Home() {
   return (
     <div className="container">
       <header className="home-header">
-        <Image
-          src="/pics/BuildStation-logo.png"
-          alt="Logo"
-          width={150}
-          height={150}
-          className="logo"
-        />
+        <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo" />
       </header>
       <div id="welcome">
         <p id="instructions" className="instructions">
-          <h2 id="heading">
-            <strong>Instructions:</strong>
-          </h2>
-
-          <p>Click on "Start Scanning" to activate the scanner.</p>
-          <p>Point your camera to a QR code or barcode to scan.</p>
-          <p>Results will be displayed below.</p>
+        <main className="home-main">
+        <i class="barcode-icon"></i>
+        <br/>
+        <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Start Scanning</button>
+      </main>
+        <h2 id="heading">Instructions:</h2>
+          Click on "Start Scanning" to activate the scanner.<br/>
+          Point your camera to a QR code or barcode to scan.<br/>
+          Results will be displayed below.
         </p>
         <div id="form" className="form">
-          <input
-            id="myInput"
-            placeholder="Or enter SKU manually..."
-            type="text"
-            value={sku}
-            onChange={handleSkuChange}
-          />
-          <button className="submit" onClick={handleSearch}>
-            SUBMIT
-          </button>
+          <input id="myInput" placeholder="Or enter SKU manually..." type="text" value={sku} onChange={handleSkuChange} />
+          <button className="submit" onClick={handleSearch}>SUBMIT</button>
         </div>
-
         <div id="output">
-         
-                  {error && <p className="error-message">{error}</p>}
-        {productDetail && productDetail.item && (
-          <div className="product-details">
-            <h2><strong>Product Name:</strong> {productDetail.item.title}</h2>
-            <Image
-              src={productDetail.item.image}
-              alt={productDetail.item.title}
-              width={150}
-              height={150}
-            />
-            <p>Price: {productDetail.item.price}</p>
-          </div>
-        )}
+          {error && <p className="error-message">{error}</p>}
+          {productDetail && productDetail.item && (
+            <div className="product-details">
+              <h2><strong>Product Name:</strong> {productDetail.item.title}</h2>
+              <Image src={productDetail.item.image} alt={productDetail.item.title} width={150} height={150} />
+              <p>Price: {productDetail.item.price}</p>
+            </div>
+          )}
         </div>
       </div>
-      <main className="home-main">
-         <form onSubmit={handleSearch} className="sku-form">
-         
-          <button
-            type="button"
-            className="scan-button"
-            onClick={() => setShowScanner(true)}
-          >
-            Start Scanning
-          </button>
-        </form>
-       
-      </main>
+     
       {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
@@ -210,15 +179,11 @@ export default function Home() {
                 }
               }}
             />
-            <button
-              className="close-button"
-              onClick={() => setShowScanner(false)}
-            >
-              Close Scanner
-            </button>
+            <button className="close-button" onClick={() => setShowScanner(false)}>Close Scanner</button>
           </div>
         </div>
       )}
     </div>
   );
+  
 }
