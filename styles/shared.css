@@ -1945,9 +1945,9 @@ video {
 }
 
 #instructions {
-  background-color: #f7f7f7;
+  /* background-color: #f7f7f7; */
   padding: 10px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   border-radius: 4px;
 }
 
@@ -2121,4 +2121,14 @@ i.barcode-icon {
   40% {
     transform:translateY(0);
   }
+}
+.home-header {
+  width: 70%;
+   /* or whatever maximum width you want for the logo */
+  margin: 0 auto; /* center the logo container */
+}
+
+.logo {
+  width: 100%; /* make the image take up 100% of its container’s width */
+  height: auto;
 }

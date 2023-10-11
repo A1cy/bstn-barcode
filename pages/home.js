@@ -140,11 +140,11 @@ export default function Home() {
   return (
     <div className="container">
       <header className="home-header">
-         <Image src="/pics/BuildStation-logo.png" alt="Logo" width={100} height={100} className="logo" />
+      <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo" layout="responsive" />
       </header>
       <div id="welcome">
         <main className="home-main">
-        <i class="barcode-icon"></i>
+        <i className="barcode-icon"></i>
         <br/>
         <button type="button" className="scan-button" onClick={handleScanButtonClick}>Start Scanning</button>
       </main>
