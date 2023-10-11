@@ -55,41 +55,51 @@ export default function Home() {
         }
       });
   };
- 
   const capture = useCallback(() => {
     if (webcamRef.current) {
-      const imageSrc = webcamRef.current.getScreenshot();
-      if (imageSrc) {
-        const image = new window.Image();
-        image.src = imageSrc;
-        image.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = image.width;
-          canvas.height = image.height;
-          const context = canvas.getContext('2d');
-          context.drawImage(image, 0, 0);
-          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-          const luminanceSource = new RGBLuminanceSource(imageData.data, canvas.width, canvas.height);
-          const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
-          try {
-            const result = multiFormatReader.decode(binaryBitmap);
-            setSku(result.getText());
-            handleSearch(null, result.getText());
-            setShowScanner(false);
-          } catch (error) {
-            if (error instanceof NotFoundException) {
-              console.error('Code not found, retrying...'); // or handle as you see fit
-              requestAnimationFrame(capture);
-            } else {
-              console.error('Unexpected error during code scanning:', error);
-            }
-          }
-        };
-      }
+        const imageSrc = webcamRef.current.getScreenshot();
+        if (imageSrc) {
+            const image = new window.Image();
+            image.src = imageSrc;
+            image.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                const context = canvas.getContext('2d');
+                context.drawImage(image, 0, 0);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const luminanceSource = new RGBLuminanceSource(imageData.data, canvas.width, canvas.height);
+                const binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminanceSource));
+                try {
+                    const result = multiFormatReader.decode(binaryBitmap);
+                    setSku(result.getText());
+                    handleSearch(null, result.getText());
+                    setShowScanner(false);
+                } catch (error) {
+                    if (error instanceof NotFoundException) {
+                        console.log('Code not found, retrying...');
+                        requestAnimationFrame(capture);  // Use requestAnimationFrame for smoother repeated calls
+                    } else {
+                        console.error('Unexpected error during code scanning:', error);
+                    }
+                }
+            };
+        }
     }
-  }, [webcamRef, handleSearch]);
+}, [webcamRef, handleSearch]);
 
-
+useEffect(() => {
+    let animationFrameId;
+    if (showScanner) {
+        animationFrameId = requestAnimationFrame(capture);  // Start the scanning loop with requestAnimationFrame
+    }
+    return () => {
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);  // Cancel the scanning loop when the component is unmounted or the scanner is closed
+        }
+    };
+}, [showScanner, capture]);
+      
  
 return (
   <div className="container">
