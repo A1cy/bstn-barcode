@@ -22,36 +22,37 @@ export default function Home() {
     setShowInstructions(false);
     setShowScanner(true);
   };
-  const handleSearch = (e, scannedSku) => {
+
+   // Wrapped handleSearch with useCallback and added dependencies
+   const handleSearch = useCallback((e, scannedSku) => {
     const targetSku = scannedSku || sku;
     if (e) e.preventDefault();
-    axios
-      .post("/api/get-product", { sku: targetSku })
-      .then((response) => {
-        if (response.data && response.data.slug && response.data.category) {
-          return axios.get(
-            `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
-          );
-        } else {
-          throw new Error("Product not found");
-        }
-      })
-      .then((detailResponse) => {
-        setProductDetail(detailResponse.data);
-        setError(null);
-      })
-      .catch((err) => {
-        console.error(err);
-        if (
-          err.message === "Product not found" ||
-          (err.response && err.response.status === 404)
-        ) {
-          setError("Product not found");
-        } else {
-          setError("Failed to fetch product");
-        }
-      });
-  };
+    axios.post("/api/get-product", { sku: targetSku })
+    .then((response) => {
+      if (response.data && response.data.slug && response.data.category) {
+        return axios.get(
+          `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
+        );
+      } else {
+        throw new Error("Product not found");
+      }
+    })
+    .then((detailResponse) => {
+      setProductDetail(detailResponse.data);
+      setError(null);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (
+        err.message === "Product not found" ||
+        (err.response && err.response.status === 404)
+      ) {
+        setError("Product not found");
+      } else {
+        setError("Failed to fetch product");
+      }
+    });
+  }, [sku]); // Add other dependencies if needed
 
   const captureQR = useCallback(() => {
     if (webcamRef.current) {
@@ -117,7 +118,6 @@ export default function Home() {
       );
     }
   }, [webcamRef, handleSearch, setSku, setShowScanner]);
-
   useEffect(() => {
     if (showScanner) {
       const intervalId = setInterval(() => {
@@ -125,7 +125,7 @@ export default function Home() {
       }, 1000); // Switch mode every second or adjust as needed
       return () => clearInterval(intervalId);
     }
-  }, [showScanner]);
+  }, [showScanner]); // Corrected dependencies
 
   useEffect(() => {
     if (showScanner) {
@@ -135,7 +135,7 @@ export default function Home() {
         captureBarcode();
       }
     }
-  }, [showScanner, scanMode, captureQR, captureBarcode]);
+  }, [showScanner, scanMode, captureQR, captureBarcode]); // Corrected dependencies
 
   return (
     <div className="container">
@@ -152,7 +152,7 @@ export default function Home() {
       {showInstructions && (
         <div id="instructions" className="instructions">
         <h2 id="heading">Instructions:</h2>
-        Click on "Start Scanning" to activate the scanner.<br/>
+        Click on Start Scanning to activate the scanner.<br/>
         Point your camera to a QR code or barcode to scan.<br/>
         Results will be displayed below.
       </div>
