@@ -1928,3 +1928,147 @@ video {
   height: 100%!important;
  
 }
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.home-header {
+  text-align: center;
+}
+
+.home-main {
+  margin-top: 20px;
+}
+
+#instructions {
+  background-color: #f7f7f7;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.sku-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.sku-form input {
+  padding: 10px;
+  flex: 1;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.scan-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.scan-button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.product-details {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.scanner-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scanner-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  max-width: 90%;
+}
+
+.close-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: #c82333;
+}
+/* ... Existing styles ... */
+
+#instructions {
+  font-family: "Lexend Deca", sans-serif;
+  text-align: center;
+  color: black;
+  max-width: 80vw;
+   margin-left: auto;
+  margin-right: auto;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+#myInput {
+  border: 2px solid black;
+  padding: 10px;
+  width: 200px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  color: black;
+  padding-left: 20px;
+  font-size: 14px;
+  border-right: 0px;
+}
+
+.submit {
+  font-family: "Lexend Deca", sans-serif;
+  background-color: black;
+  border: 2px solid black;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 1px;
+  width: 100px;
+  cursor: pointer;
+}
+
+#output {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: sans-serif;
+  margin-top: 50px;
+}
