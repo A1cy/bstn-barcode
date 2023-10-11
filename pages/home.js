@@ -12,11 +12,16 @@ export default function Home() {
   const [showScanner, setShowScanner] = useState(false);
   const [scanMode, setScanMode] = useState("QR"); // Initial scanning mode
   const webcamRef = useRef(null);
+  const [showInstructions, setShowInstructions] = useState(true);
+
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
   };
-
+  const handleScanButtonClick = () => {
+    setShowInstructions(false);
+    setShowScanner(true);
+  };
   const handleSearch = (e, scannedSku) => {
     const targetSku = scannedSku || sku;
     if (e) e.preventDefault();
@@ -135,20 +140,24 @@ export default function Home() {
   return (
     <div className="container">
       <header className="home-header">
-        <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo" />
+         <Image src="/pics/BuildStation-logo.png" alt="Logo" width={100} height={100} className="logo" />
       </header>
       <div id="welcome">
-        <p id="instructions" className="instructions">
         <main className="home-main">
         <i class="barcode-icon"></i>
         <br/>
-        <button type="button" className="scan-button" onClick={() => setShowScanner(true)}>Start Scanning</button>
+        <button type="button" className="scan-button" onClick={handleScanButtonClick}>Start Scanning</button>
       </main>
+      <br/>
+      {showInstructions && (
+        <div id="instructions" className="instructions">
         <h2 id="heading">Instructions:</h2>
-          Click on "Start Scanning" to activate the scanner.<br/>
-          Point your camera to a QR code or barcode to scan.<br/>
-          Results will be displayed below.
-        </p>
+        Click on "Start Scanning" to activate the scanner.<br/>
+        Point your camera to a QR code or barcode to scan.<br/>
+        Results will be displayed below.
+      </div>
+        )}
+      
         <div id="form" className="form">
           <input id="myInput" placeholder="Or enter SKU manually..." type="text" value={sku} onChange={handleSkuChange} />
           <button className="submit" onClick={handleSearch}>SUBMIT</button>
