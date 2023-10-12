@@ -201,7 +201,7 @@ alt={productDetail.meta_data.image_alt || productDetail.item.title}
         <p>Price: {productDetail.item.price}</p>
         {/* <h3>{productDetail.meta_data.meta_title}</h3> */}
         <p>{productDetail.meta_data.meta_description}</p>
-        <button onClick={() => router.push(`/productDetail?sku=${sku}`)}>View Full Details</button>
+        <button className="to-product-details" onClick={() => router.push(`/productDetail?sku=${sku}`)}>View Full Details</button>
       </div>
     )
   }

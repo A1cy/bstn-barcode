@@ -2079,7 +2079,7 @@ video {
 }
 
 #output {
-  width: 80%;
+  /* width: 80%; */
   margin-left: auto;
   margin-right: auto;
   font-family: sans-serif;
@@ -2132,4 +2132,16 @@ i.barcode-icon {
 .logo {
   width: 100%; /* make the image take up 100% of its container’s width */
   height: auto;
+}
+.error-message { 
+  text-align: center;
+}
+
+.to-product-details{
+padding: 10px 20px;
+background-color: #73CDE1;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
 }
