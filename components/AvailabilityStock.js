@@ -1,18 +1,22 @@
 import React from 'react';
 
-// Availability and Stock Information Component
-const AvailabilityStock = () => {
+const AvailabilityStock = ({ data }) => {
+  if (!data || !data.item) return null;
+
+  const { availability, stock_quantity } = data.item;
+
   return (
-    // Replace this div with the HTML content related to Availability and Stock.
     <div className="header-content-container"> 
       <div className="availblity-stock-container">
-        {/* availblity section */}
+        {/* availability section */}
         <div className="availblity-Preordered">
           <div className="availblity-container">
-            <p className="availble" id="availble">Estimated Time Of Arrival! ( 1/1/2024 )</p> {/* uncomment when needed */}
-            {/* <p class="Not-Available" id="Not-Available">Not Available Anymore!</p>*/}
-            {/* <p class="Arriving-Soon" id="Arriving-Soon">Arriving Soon!</p> */}
+            {availability ? 
+              <p className="availble" id="availble">Available</p> : 
+              <p className="Not-Available" id="Not-Available">Not Available Anymore!</p>
+            }
           </div>
+          {/* I'm not sure about the Preordered section, so I'm leaving it as is for now */}
           <div className="Preordered">
             <p id="Preordered">Preordered</p>
             <table id="Preordered-table">
@@ -24,41 +28,23 @@ const AvailabilityStock = () => {
               </tbody>
             </table>
           </div>
-        </div> 
+        </div>
         {/* stock table section */}
         <div className="stock">
           <p id="Stock">Stock</p>
           <table id="stock-table">
             <tbody>
+             
+              {/* Assuming a single warehouse for simplicity, you might want to loop over multiple warehouses if needed */}
               <tr>
-                <th className="left-column" id="Wearhouse">Warehouse</th>
-                <th className="right-column" id="Quantity">Quantity</th>
-              </tr>
-              <tr>
-                <td className="left-column" id="Wearhouse1">malaz</td>
-                <td className="right-column" id="Quantity1">92</td>
-              </tr>
-              <tr>
-                <td className="left-column" id="Wearhouse2">kh-b</td>
-                <td className="right-column" id="Quantity2">17</td>
-              </tr>
-              <tr>
-                <td className="left-column" id="Wearhouse3">branch</td>
-                <td className="right-column" id="Quantity3">21</td>
-              </tr>
-              <tr>
-                <td className="left-column" id="Wearhouse4">branch</td>
-                <td className="right-column" id="Quantity4">73</td>
-              </tr>
-              <tr>
-                <td className="left-column" id="Wearhouse5">brancj</td>
-                <td className="right-column" id="Quantity5">7</td>
+                <td className="left-column" id="Wearhouse1">Main Warehouse</td>
+                <td className="right-column" id="Quantity1">{stock_quantity}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>   
-      </div>
+    </div>
   );
 };
 
