@@ -16,12 +16,16 @@ export default function ProductDetailPage() {
    const router = useRouter();
    const { sku } = router.query;
    const [productData, setProductData] = useState(null);
+   const [relatedProducts, setRelatedProducts] = useState([]);
+   const [uuid, setUUID] = useState(null); // Define a state to store uuid
    const [error, setError] = useState(null);
  
    useEffect(() => {
      if (sku) {
        axios.post('/api/get-product', { sku })
          .then(response => {
+          const { slug, category, uuid } = response.data;
+          setUUID(uuid);  // Store the uuid in the state
            if (response.data && response.data.slug && response.data.category) {
              return axios.get(`/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`);
            } else {
@@ -30,6 +34,16 @@ export default function ProductDetailPage() {
          })
          .then(detailResponse => {
            setProductData(detailResponse.data);
+
+           // Fetch related products once we have the product data
+           if (detailResponse.data && detailResponse.data.uuid) {
+             return axios.get(`/api/get-related-products?uuid=${detailResponse.data.uuid}`);
+           }
+         })
+         .then(relatedResponse => {
+           if (relatedResponse && relatedResponse.data) {
+             setRelatedProducts(relatedResponse.data);
+           }
          })
          .catch(err => {
            console.error(err);
@@ -38,9 +52,22 @@ export default function ProductDetailPage() {
      }
    }, [sku]);
 
+   useEffect(() => {
+    if (productData && productData.uuid) {
+      // Fetch related products using the product UUID
+      axios.get(`/api/get-related-product?uuid=${productData.uuid}`)
+        .then(response => {
+          setRelatedProducts(response.data.data || []);
+        })
+        .catch(error => {
+          console.error("Error fetching related products:", error);
+        });
+    }
+  }, [productData]);
+
    if (error) return <p>{error}</p>;
    if (!productData) return <p>Loading...</p>;
- 
+   
    return (
     <div>
       {/* <HeaderContentContainer /> */}
@@ -48,7 +75,12 @@ export default function ProductDetailPage() {
       <ProductDetail data={productData} />
       <AvailabilityStock data={productData} />
       <DescriptionSpecification data={productData} />
-      <ProductSlider title="Related Products" data={productData.relatedProducts} />
+        <ProductSlider title="Related Products test" uuid={uuid} />  
+        <ProductSlider title="Related Products" uuid={productData.uuid} />  
+      {productData.uuid && <ProductSlider title="Related Products" uuid={productData.uuid} />}
+
+      <ProductSlider title="Related Products" data={productData.relatedProducts} uuid={uuid} /> 
+
       <Footer />
     </div>
   );

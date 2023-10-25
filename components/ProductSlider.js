@@ -1,32 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Slider from "react-slick";
-
+ 
 // Custom Arrow component
 const CustomArrow = ({ type, onClick }) => {
-   return (
-     <button className={`splide__arrow splide__arrow--${type}`} type="button" aria-controls="splide01-track" aria-label={`${type === 'prev' ? 'Previous' : 'Next'} slide`} onClick={onClick}>
-       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
-         <path d="m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z"></path>
-       </svg>
-     </button>
-   );
- };
- 
+  return (
+    <button
+      className={`splide__arrow splide__arrow--${type}`}
+      type="button"
+      aria-controls="splide01-track"
+      aria-label={`${type === "prev" ? "Previous" : "Next"} slide`}
+      onClick={onClick}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 40 40"
+        width="40"
+        height="40"
+      >
+        <path d="m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z"></path>
+      </svg>
+    </button>
+  );
+};
 
-const ProductSlider = ({ title }) => {
-  const products = [
-    { name: 'Product 1', price: 29 },
-    { name: 'Product 2', price: 322 },
-    { name: 'Product 3', price: 324 },
-    { name: 'Product 4', price: 326 },
-    { name: 'Product 5', price: 372 },
-    { name: 'Product 6', price: 362 },
-    { name: 'Product 7', price: 334 },
-    { name: 'Product 8', price: 322},
-    { name: 'Product 9', price: 328 },
-    { name: 'Product 10', price: 329 },
-    // Add more products here
-  ];
+const ProductSlider = ({ title, uuid }) => {
+  console.log("UUID in ProductSlider:", uuid ?? "UUID is undefined");
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    if (uuid) {
+      axios
+        .get(`/api/get-related-products?uuid=${uuid}`)
+        .then((response) => {
+          const relatedProducts = response.data.data;
+          setProducts(relatedProducts || []);
+        })
+        .catch((error) => {
+          console.error("Error fetching related products:", error);
+        });
+    }
+  }, [uuid]);
 
   const settings = {
     dots: true,
@@ -40,16 +54,16 @@ const ProductSlider = ({ title }) => {
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 3
-        }
+          slidesToShow: 3,
+        },
       },
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 2
-        }
-      }
-    ]
+          slidesToShow: 2,
+        },
+      },
+    ],
   };
 
   return (
@@ -59,23 +73,29 @@ const ProductSlider = ({ title }) => {
           <div className="row">
             <div className="Related-Products">
               <div className="splide__track">
-                <p className="products-category-header" id={title.replace(" ", "-")}>{title}</p>
+                <p
+                  className="products-category-header"
+                  id={title.replace(" ", "-")}
+                >
+                  {title}
+                </p>
                 <hr className="devider-products-category" />
+                
                 <Slider {...settings}>
                   {products.map((product, index) => (
-                    <div key={index} className="col-sm-4 splide__slide m-2">
-                      <div className="card text-white">
-                        <div className="card-body">
-                          <a href="#"><img src="pics/slider.png" alt="product pic" /></a>
-                          <p className="card-title">{product.name}</p>
-                          <div className="price inline">
-                            <p className="card-price">{product.price}</p>
-                            <h1 className="card-currncy">SAR</h1>
-                          </div>
-                          <p className="vat">Inclusive of VAT</p>
-                        </div>
-                      </div>
-                    </div>
+              <div key={index} className="col-sm-4 splide__slide m-2">
+              <div className="card text-white">
+                <div className="card-body">
+                  <a href="#"><img src={`https://dyq4yrh81omo6.cloudfront.net/products/${product.item.default_image}`} alt="product pic" /></a>
+                  <p className="card-title">{product.item.item_lang[0].title}</p>
+                  <div className="price inline">
+                    <p className="card-price">{product.variant.regular_price}</p>
+                    <h1 className="card-currncy">SAR</h1>
+                  </div>
+                  <p className="vat">Inclusive of VAT</p>
+                </div>
+              </div>
+            </div>
                   ))}
                 </Slider>
               </div>

@@ -16,12 +16,13 @@ export default async function handler(req, res) {
                 }
             }
         );
+
         console.log("Detail Response:", detailResponse.data);
 
+        // Sending the entire data structure to ensure we have the uuid.
         res.status(200).json(detailResponse.data.data);
     } catch (error) {
-      console.error("Error in get-product:", error.message);
-      res.status(500).json({ error: 'Error fetching product' });
-  }
-  
+      console.error("Error in get-product-detail:", error.message);
+      res.status(500).json({ error: 'Error fetching product details' });
+    }
 }

@@ -18,13 +18,13 @@ export default async function handler(req, res) {
             }
         );
         console.log("Search Response:", searchResponse.data);
-
+        
         if (searchResponse.data && searchResponse.data.data && searchResponse.data.data.items && searchResponse.data.data.items[0]) {
             const product = searchResponse.data.data.items[0];
-            const { slug, item_category_slug: category } = product;
-
+            const { slug, item_category_slug: category, uuid } = product; // Include uuid
+        
             // Directly return the product data
-            res.status(200).json({ slug, category });
+            res.status(200).json({ slug, category, uuid }); // Include uuid in the response
         } else {
             throw new Error("Product not found");
         }
