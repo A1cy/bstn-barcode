@@ -33,7 +33,9 @@ const ProductSlider = ({ title, uuid }) => {
       axios
         .get(`/api/get-related-products?uuid=${uuid}`)
         .then((response) => {
+          // Ensure that the structure of the data matches response.data.data
           const relatedProducts = response.data.data;
+          console.log("Related products fetched:", relatedProducts);  // Log to check the data
           setProducts(relatedProducts || []);
         })
         .catch((error) => {
@@ -41,6 +43,7 @@ const ProductSlider = ({ title, uuid }) => {
         });
     }
   }, [uuid]);
+
 
   const settings = {
     dots: true,
@@ -65,6 +68,8 @@ const ProductSlider = ({ title, uuid }) => {
       },
     ],
   };
+ 
+
 
   return (
     <div className="gray">
@@ -81,22 +86,29 @@ const ProductSlider = ({ title, uuid }) => {
                 </p>
                 <hr className="devider-products-category" />
                 
+                {/* Simplified Slider rendering to show product names */}
                 <Slider {...settings}>
-                  {products.map((product, index) => (
-              <div key={index} className="col-sm-4 splide__slide m-2">
-              <div className="card text-white">
-                <div className="card-body">
-                  <a href="#"><img src={`https://dyq4yrh81omo6.cloudfront.net/products/${product.item.default_image}`} alt="product pic" /></a>
-                  <p className="card-title">{product.item.item_lang[0].title}</p>
-                  <div className="price inline">
-                    <p className="card-price">{product.variant.regular_price}</p>
-                    <h1 className="card-currncy">SAR</h1>
-                  </div>
-                  <p className="vat">Inclusive of VAT</p>
-                </div>
-              </div>
-            </div>
-                  ))}
+                {products && products.length > 0 ? (
+  products.map((product, index) => (
+    <div key={index} className="col-sm-4 splide__slide m-2">
+      <div className="card text-white">
+        <div className="card-body">
+          <a href="#">
+            <img src={`https://dyq4yrh81omo6.cloudfront.net/products/${product.item.default_image}`} alt="product pic" />
+          </a>
+          <p className="card-title">{product.item.item_lang[0].title}</p>
+          <div className="price inline">
+            {/* <p className="card-price">{product.variant.regular_price}</p> */}
+            <h1 className="card-currncy">SAR</h1>
+          </div>
+          <p className="vat">Inclusive of VAT</p>
+        </div>
+      </div>
+    </div>
+  ))
+) : (
+  <p>No related products found.</p>
+)}
                 </Slider>
               </div>
             </div>
@@ -105,6 +117,7 @@ const ProductSlider = ({ title, uuid }) => {
       </div>
     </div>
   );
+  
 };
 
 export default ProductSlider;
