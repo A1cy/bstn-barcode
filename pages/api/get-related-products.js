@@ -17,13 +17,20 @@ export default async function handler(req, res) {
                 }
             }
         );
-        console.log("Related Products from API:", relatedProductsResponse.data);  // Logging to check the data
-        res.status(200).json(relatedProductsResponse.data);
-      } catch (error) {
+        const relatedProducts = relatedProductsResponse.data.data;
+
+        // Extract the SKU from the first variant of each product
+        relatedProducts.forEach(product => {
+            if (product.variants && product.variants.length > 0) {
+                product.variant = product.variants[0];
+            }
+        });
+
+        console.log("Processed Related Products:", relatedProducts);  // Logging to check the data
+
+        res.status(200).json({ data: relatedProducts });
+    } catch (error) {
         console.error("Error fetching related products in API Handler:", error);
         res.status(500).json({ error: 'Error fetching related products in API Handler' });
-      }
-      
-
-   
+    }
 }

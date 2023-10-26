@@ -7,7 +7,7 @@ const DescriptionSpecification = ({ data }) => {
   const baseURL = "https://dyq4yrh81omo6.cloudfront.net/manuals/";
 
   return (
-    <div className="header-content-container">
+    
       <div className="Description-Specification-container">
         {/* Description section */}
         <div className="inline-Description">
@@ -52,7 +52,7 @@ const DescriptionSpecification = ({ data }) => {
           </div>
         </div>
       </div>
-    </div>
+    
   );
 };
 

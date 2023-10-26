@@ -6,7 +6,7 @@ const AvailabilityStock = ({ data }) => {
   const { availability, stock_quantity } = data.item;
 
   return (
-    <div className="header-content-container"> 
+    
       <div className="availblity-stock-container">
         {/* availability section */}
         <div className="availblity-Preordered">
@@ -44,7 +44,7 @@ const AvailabilityStock = ({ data }) => {
           </table>
         </div>
       </div>   
-    </div>
+    
   );
 };
 

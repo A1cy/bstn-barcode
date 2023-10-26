@@ -59,7 +59,7 @@ const ProductDetails = ({ data }) => {
   const brandBaseURL = "https://dyq4yrh81omo6.cloudfront.net/thumbnails/small/brands/";
 
   return (
-    <div className="header-content-container">
+   
       <div className="content-container">
         <div className="images-container">
           <section id="image-carousel" className="splide">
@@ -102,7 +102,7 @@ const ProductDetails = ({ data }) => {
           </div>
         </div>
       </div>
-    </div>
+     
   );
 };
 

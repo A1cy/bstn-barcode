@@ -158,7 +158,7 @@ export default function Home() {
 
 
   return (
-    <div className="container">
+    <div className="container-home">
       <header className="home-header">
       <Image src="/pics/BuildStation-logo.png" alt="Logo" width={150} height={150} className="logo" layout="responsive" />
       </header>

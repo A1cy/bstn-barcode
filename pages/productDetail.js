@@ -70,17 +70,15 @@ export default function ProductDetailPage() {
    
    return (
     <div>
-      {/* <HeaderContentContainer /> */}
+       <HeaderContentContainer /> 
       {/* <h1>Product Page for SKU: {sku}</h1>   */}
+      <div className="header-content-container"> 
       <ProductDetail data={productData} />
       <AvailabilityStock data={productData} />
       <DescriptionSpecification data={productData} />
-        <ProductSlider title="Related Products test" uuid={uuid} />  
-        <ProductSlider title="Related Products" uuid={productData.uuid} />  
-      {productData.uuid && <ProductSlider title="Related Products" uuid={productData.uuid} />}
-
-      <ProductSlider title="Related Products" data={productData.relatedProducts} uuid={uuid} /> 
-
+      </div>
+      <ProductSlider title="Related Products" uuid={uuid} />  
+      <ProductSlider title="Cross Selling Products" uuid={uuid} />  
       <Footer />
     </div>
   );
