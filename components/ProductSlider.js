@@ -116,19 +116,19 @@ const ProductSlider = ({ title, uuid }) => {
                               />
                             </a>
                             <p className="card-title">{title}</p> 
-                            <p className="product-sku">
+                            <span className="product-sku">
                               SKU: {sku}
-                            </p>
+                            </span>
                             <div className="price inline">
                               <p className="card-price">{price}</p>
-                              <h1 className="card-currency">SAR</h1>
+                              <h3 className="card-currency">SAR</h3>
                             </div>
-                            
+{/*                             
                            
                             
                             
                             
-                            <p className="vat">Inclusive of VAT</p>
+                            <p className="vat">Inclusive of VAT</p> */}
                           </div>
                         </div>
                       </div>
