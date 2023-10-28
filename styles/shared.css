@@ -2152,9 +2152,10 @@ video {
 
 .scanner-content {
   background-color: #fff;
-  padding: 20px;
+  padding: 5px;
   border-radius: 4px;
   max-width: 90%;
+  height: 90%;
 }
 
 .close-button {
