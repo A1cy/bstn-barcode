@@ -60,8 +60,10 @@ export default function Home() {
 
   const captureQR = useCallback(() => {
     if (webcamRef.current) {
+      console.log("Trying to capture QR code...");
       const imageSrc = webcamRef.current.getScreenshot();
       if (imageSrc) {
+        console.log("Got screenshot from webcam...");
         const image = new window.Image();
         image.src = imageSrc;
         image.onload = () => {
@@ -70,55 +72,54 @@ export default function Home() {
           canvas.height = image.height;
           const context = canvas.getContext("2d");
           context.drawImage(image, 0, 0);
-          const imageData = context.getImageData(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-          );
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
           const code = jsQR(imageData.data, canvas.width, canvas.height);
           if (code) {
+            console.log("QR code detected:", code.data);
             setSku(code.data);
             handleSearch(null, code.data);
             setShowScanner(false);
           } else {
+            console.log("QR code not detected. Retrying...");
             requestAnimationFrame(captureQR);
           }
         };
+      } else {
+        console.error("Failed to get screenshot from webcam.");
       }
     }
   }, [webcamRef, handleSearch]);
 
   const captureBarcode = useCallback(() => {
     if (quaggaContainerRef.current) {
-      Quagga.init(
-        {
-          inputStream: {
-            type: "LiveStream",
-            target: quaggaContainerRef.current,
-          },
-          decoder: {
-            readers: ["code_128_reader", "ean_reader"],
-          },
+      console.log("Trying to capture barcode...");
+      Quagga.init({
+        inputStream: {
+          type: "LiveStream",
+          target: quaggaContainerRef.current
         },
-        (err) => {
-          if (err) {
-            console.error("Error initializing Quagga:", err);
-            setError("Error initializing barcode scanner.");
-            return;
-          }
-          Quagga.start();
-          Quagga.onDetected((result) => {
-            if (result && result.codeResult) {
-              console.log("Detected barcode:", result.codeResult.code);
-              setSku(result.codeResult.code);
-              handleSearch(null, result.codeResult.code);
-              setShowScanner(false);
-              Quagga.stop();
-            }
-          });
+        decoder: {
+          readers: ["code_128_reader", "ean_reader"]
         }
-      );
+      }, (err) => {
+        if (err) {
+          console.error("Error initializing Quagga:", err);
+          setError("Error initializing barcode scanner.");
+          return;
+        }
+        Quagga.start();
+        Quagga.onDetected((result) => {
+          if (result && result.codeResult) {
+            console.log("Detected barcode:", result.codeResult.code);
+            setSku(result.codeResult.code);
+            handleSearch(null, result.codeResult.code);
+            setShowScanner(false);
+            Quagga.stop();
+          } else {
+            console.log("Barcode not detected. Retrying...");
+          }
+        });
+      });
     }
   }, [quaggaContainerRef, handleSearch]);
 
