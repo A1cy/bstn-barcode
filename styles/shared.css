@@ -2191,8 +2191,7 @@ video {
   border: 2px solid #73cde1;
   padding: 10px;
   width: 200px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+   border-bottom-left-radius: 10px;
   color: black;
   padding-left: 20px;
   font-size: 14px;
