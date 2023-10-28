@@ -956,6 +956,7 @@ div .inline {
   font-size: 1.5rem;
   border: 1px solid rgba(126, 122, 122, 0.219);
   font-weight: 700;
+  text-align: center;
 }
 .availble {
   background-color: #19875441;
@@ -1087,13 +1088,11 @@ div .inline {
 }
 
 @media (max-width: 1085px) {
-  .stock {
-    width: 47%;
-  }
+ 
 }
 @media (max-width: 500px) {
   .stock {
-    width: 100%;
+    width: -webkit-fill-available;
   }
   .stock p {
     padding-bottom: 3%;
@@ -1445,7 +1444,7 @@ tr:nth-child(even) {
 
 @media (max-width: 768px) {
   .products-category {
-    padding-left: 1rem;
+    padding-left: 0.1rem;
   }
   .devider-products-category {
     width: 9% !important;

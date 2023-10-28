@@ -9,13 +9,13 @@ const AvailabilityStock = ({ data }) => {
     
       <div className="availblity-stock-container">
         {/* availability section */}
-        <div className="availblity-Preordered">
           <div className="availblity-container">
             {availability ? 
               <p className="availble" id="availble">Available</p> : 
               <p className="Not-Available" id="Not-Available">Not Available Anymore!</p>
             }
           </div>
+        <div className="availblity-Preordered">
           {/* I'm not sure about the Preordered section, so I'm leaving it as is for now */}
           <div className="Preordered">
             <p id="Preordered">Preordered</p>
