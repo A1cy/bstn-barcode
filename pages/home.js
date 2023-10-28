@@ -1,69 +1,63 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+
+
+import React, { useState, useRef, useCallback } from "react";
 import axios from "axios";
 import jsQR from "jsqr";
 import Quagga from "quagga";
 import Image from "next/image";
 import Webcam from "react-webcam";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const [sku, setSku] = useState("");
   const [error, setError] = useState(null);
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
-  const [scanMode, setScanMode] = useState("QR");
-  const webcamRef = useRef(null);
-  const quaggaContainerRef = useRef(null);
+  const [scanMode, setScanMode] = useState(null);
   const [showInstructions, setShowInstructions] = useState(true);
+  const webcamRef = useRef(null);
+
   const router = useRouter();
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
   };
 
-  const handleScanButtonClick = () => {
+  const handleScanButtonClick = (mode) => {
     setShowInstructions(false);
     setShowScanner(true);
+    setScanMode(mode);
   };
 
-  const handleSearch = useCallback(
-    async (e, scannedSku) => {
-      e && e.preventDefault();
-      const targetSku = scannedSku || sku;
-      try {
-        const response = await axios.post("/api/get-product", {
-          sku: targetSku,
-        });
-        if (response.data && response.data.slug && response.data.category) {
-          const detailResponse = await axios.get(
-            `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
-          );
-          setProductDetail(detailResponse.data);
-          setError(null);
-        } else {
-          throw new Error("Product not found");
-        }
-      } catch (err) {
-        console.error(err);
-        if (
-          err.message === "Product not found" ||
-          (err.response && err.response.status === 404)
-        ) {
-          setError("Product not found");
-        } else {
-          setError("Failed to fetch product");
-        }
+  const handleSearch = useCallback(async (e, scannedSku) => {
+    const targetSku = scannedSku || sku;
+    if (e) e.preventDefault();
+    try {
+      const response = await axios.post("/api/get-product", {
+        sku: targetSku,
+      });
+      if (response.data && response.data.slug && response.data.category) {
+        const detailResponse = await axios.get(
+          `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
+        );
+        setProductDetail(detailResponse.data);
+        setError(null);
+      } else {
+        throw new Error("Product not found");
       }
-    },
-    [sku]
-  );
+    } catch (err) {
+      if (err.message === "Product not found" || (err.response && err.response.status === 404)) {
+        setError("Product not found");
+      } else {
+        setError("Failed to fetch product");
+      }
+    }
+  }, [sku]);
 
   const captureQR = useCallback(() => {
     if (webcamRef.current) {
-      console.log("Trying to capture QR code...");
       const imageSrc = webcamRef.current.getScreenshot();
       if (imageSrc) {
-        console.log("Got screenshot from webcam...");
         const image = new window.Image();
         image.src = imageSrc;
         image.onload = () => {
@@ -72,81 +66,72 @@ export default function Home() {
           canvas.height = image.height;
           const context = canvas.getContext("2d");
           context.drawImage(image, 0, 0);
-          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          const imageData = context.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
           const code = jsQR(imageData.data, canvas.width, canvas.height);
           if (code) {
-            console.log("QR code detected:", code.data);
             setSku(code.data);
             handleSearch(null, code.data);
             setShowScanner(false);
           } else {
-            console.log("QR code not detected. Retrying...");
             requestAnimationFrame(captureQR);
           }
         };
-      } else {
-        console.error("Failed to get screenshot from webcam.");
       }
     }
   }, [webcamRef, handleSearch]);
 
   const captureBarcode = useCallback(() => {
-    if (quaggaContainerRef.current) {
-      console.log("Trying to capture barcode...");
+    if (webcamRef.current) {
+      const videoElement = webcamRef.current.video;
       Quagga.init({
         inputStream: {
           type: "LiveStream",
-          target: quaggaContainerRef.current
+          constraints: {
+            width: videoElement.width,
+            height: videoElement.height,
+            facingMode: "environment",
+            aspectRatio: videoElement.width / videoElement.height,
+          },
+          target: videoElement,
         },
         decoder: {
-          readers: ["code_128_reader", "ean_reader"]
-        }
+          readers: ["code_128_reader", "ean_reader"],
+        },
       }, (err) => {
         if (err) {
-          console.error("Error initializing Quagga:", err);
-          setError("Error initializing barcode scanner.");
+          console.log(err);
           return;
         }
         Quagga.start();
         Quagga.onDetected((result) => {
-          if (result && result.codeResult) {
-            console.log("Detected barcode:", result.codeResult.code);
-            setSku(result.codeResult.code);
-            handleSearch(null, result.codeResult.code);
-            setShowScanner(false);
-            Quagga.stop();
-          } else {
-            console.log("Barcode not detected. Retrying...");
-          }
+          setSku(result.codeResult.code);
+          handleSearch(null, result.codeResult.code);
+          setShowScanner(false);
+          Quagga.stop();
         });
       });
     }
-  }, [quaggaContainerRef, handleSearch]);
+  }, [webcamRef, handleSearch]);
 
   const closeScanner = useCallback(() => {
-    if (scanMode === "BARCODE" && Quagga) {
-      Quagga.stop();
-    }
     if (webcamRef.current && webcamRef.current.stream) {
       const tracks = webcamRef.current.stream.getTracks();
-      tracks.forEach((track) => track.stop());
+      tracks.forEach((track) => {
+        track.stop();
+      });
     }
     setShowScanner(false);
-  }, [scanMode]);
-
-  useEffect(() => {
-    if (showScanner) {
-      if (scanMode === "QR") {
-        captureQR();
-      } else if (scanMode === "BARCODE") {
-        captureBarcode();
-      }
-    }
-  }, [showScanner, scanMode, captureQR, captureBarcode]);
+    setScanMode(null);
+  }, []);
 
   return (
     <div className="container-home">
-      <header className="home-header">
+  <header className="home-header">
         <Image
           src="/pics/BuildStation-logo.png"
           alt="Logo"
@@ -165,7 +150,7 @@ export default function Home() {
             className="scan-button"
             onClick={handleScanButtonClick}
           >
-            Start Scanning
+            Start Scanning 1
           </button>
         </main>
         <br />
@@ -225,25 +210,23 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>
-
-      {showScanner && (
+      </div>      {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
-            {scanMode === "QR" && (
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                videoConstraints={{ facingMode: "environment" }}
-              />
-            )}
-            {scanMode === "BARCODE" && (
-              <div className="quagga-container" ref={quaggaContainerRef}></div>
-            )}
-            <button className="close-button" onClick={closeScanner}>
-              Close Scanner
-            </button>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{ facingMode: "environment" }}
+              onUserMedia={() => {
+                if (scanMode === "QR") {
+                  captureQR();
+                } else if (scanMode === "BARCODE") {
+                  captureBarcode();
+                }
+              }}
+            />
+            <button className="close-button" onClick={closeScanner}>Close Scanner</button>
           </div>
         </div>
       )}
