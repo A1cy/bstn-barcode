@@ -89,6 +89,7 @@ export default function Home() {
     }
   }, [webcamRef, handleSearch]);
   
+  
   const captureBarcode = useCallback(() => {
     if (webcamRef.current && webcamRef.current.video) {
       const videoElement = webcamRef.current.video;
