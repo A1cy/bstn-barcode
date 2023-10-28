@@ -1992,10 +1992,9 @@ button.user-log {
 }
 
 .scanner-content {
-  background-color: #ffffff77;
+  
   flex-direction: column;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .close-button {
@@ -2036,8 +2035,13 @@ button.user-log {
   padding: 20px;
   border-radius: 8px;
   margin-top: 20px;
+  width:auto;
+  margin: 0 auto;
 }
-
+.to-image {
+  width: 100%;
+  height: auto;
+}
 .product-image {
   max-width: 100px;
   max-height: 100px;
@@ -2073,7 +2077,7 @@ button.user-log {
 
 video {
   width: 100% !important;
-  height: 100% !important;
+  /* height: 100% !important; */
 }
 
 .container-home {
@@ -2151,11 +2155,11 @@ video {
 }
 
 .scanner-content {
-  background-color: #fff;
+  
   padding: 5px;
   border-radius: 4px;
   max-width: 90%;
-  height: 90%;
+  height: 70%;
 }
 
 .close-button {
