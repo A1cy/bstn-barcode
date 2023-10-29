@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { BrowserMultiFormatReader } from '@zxing/library';
+import { BrowserMultiFormatReader } from "@zxing/library";
 
 export default function Home() {
   const [sku, setSku] = useState("");
@@ -19,20 +19,26 @@ export default function Home() {
   const codeReader = new BrowserMultiFormatReader();
 
   const startScanning = () => {
-    codeReader.decodeFromInputVideoDevice(undefined, 'barcode-scanner')
-      .then(result => {
+    codeReader
+      .decodeFromInputVideoDevice(undefined, "barcode-scanner")
+      .then((result) => {
         setSku(result.text);
         handleSearch(null, result.text);
         setShowScanner(false);
-      }).catch(err => console.error(err));
+      })
+      .catch((err) => console.error(err));
   };
-
   const stopScanning = () => {
+    // Stop the scanning
     codeReader.reset();
+
+    // Close the scanner modal
+    setShowScanner(false);
   };
 
   const handleScanButtonClick = () => {
     setShowScanner(true);
+    startScanning();
   };
 
   const handleSearch = useCallback(
@@ -86,11 +92,10 @@ export default function Home() {
           <i className="barcode-icon"></i>
           <br />
           <button
-        type="button"
-        className="scan-button"
-        onClick={handleScanButtonClick}
-        
-      >
+            type="button"
+            className="scan-button"
+            onClick={handleScanButtonClick}
+          >
             Start Scanning
           </button>
         </main>
@@ -142,13 +147,26 @@ export default function Home() {
       </div>
 
       {showScanner && (
-        <div className="scanner-modal">
-          <div className="scanner-content">
-            <video id="barcode-scanner"></video>
-            <button className="start-button" onClick={startScanning}>Start Scanning</button>
-            <button className="stop-button" onClick={stopScanning}>Stop Scanning</button>
-          </div>
+    <div className="scanner-modal">
+    <div className="scanner-content">
+      <p className="scanner-instructions">
+        Place the QR or Barcode inside the box below
+      </p>
+      <div className="container-scanner">
+        <div className="scanner-content">
+          <video id="barcode-scanner"></video>
+          <div className="guidelines"></div>
         </div>
+      </div>
+      <button className="scan-button" onClick={startScanning}>
+        Reset Scanning
+      </button>
+      <button className="close-button" onClick={stopScanning}>
+        Close Scanner
+      </button>
+    </div>
+  </div>
+  
       )}
     </div>
   );
