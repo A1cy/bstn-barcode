@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -68,8 +68,6 @@ export default function Home() {
     },
     [sku]
   );
-
-
 
   return (
     <div className="container-home">
