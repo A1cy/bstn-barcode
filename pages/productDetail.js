@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import Image from "next/image";
 
 import HeaderContentContainer from '../components/HeaderContentContainer';
 import ProductDetail from '../components/ProductDetail';
@@ -65,8 +66,24 @@ export default function ProductDetailPage() {
     }
   }, [productData]);
 
-   if (error) return <p>{error}</p>;
-   if (!productData) return <p>Loading...</p>;
+          if (error) {
+            return (
+                <div className="centered-container">
+                    <Image className="spinner-logo" src="/pics/BuildStation-logo.png" alt="Logo" width={100} height={100} layout="responsive" />
+                    <p className="error-message">{error}</p>
+                </div>
+            );
+        }
+
+        if (!productData) {
+            return (
+                <div className="centered-container">
+                    <Image className="spinner-logo" src="/pics/BuildStation-logo.png" alt="Logo" width={100} height={100} layout="responsive" />
+                    <div className="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+            );
+        }
    
    return (
     <div>

@@ -1,94 +1,69 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { BarcodeFormat, BrowserMultiFormatReader, DecodeHintType , NotFoundException} from "@zxing/library";
-
+import {
+  BarcodeFormat,
+  BrowserMultiFormatReader,
+  DecodeHintType,
+  NotFoundException,
+} from "@zxing/library";
 
 export default function Home() {
-  const [showScanner, setShowScanner] = useState(false);
-  const [sku, setSku] = useState("");
   const [productDetail, setProductDetail] = useState(null);
-  const [error, setError] = useState("");
   const router = useRouter();
+  const [showScanner, setShowScanner] = useState(false);
+  const [sku, setSku] = useState('');
+  const [error, setError] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
+  
   const codeReader = new BrowserMultiFormatReader();
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
   };
 
- 
-
- 
-
- 
-  const startScanning = () => {
-    const hints = new Map();
-    hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.QR_CODE, BarcodeFormat.CODE_128, BarcodeFormat.CODE_39, BarcodeFormat.EAN_13, BarcodeFormat.EAN_8, BarcodeFormat.CODABAR, BarcodeFormat.ITF, BarcodeFormat.UPC_A, BarcodeFormat.UPC_E, BarcodeFormat.PDF_417, BarcodeFormat.AZTEC]);
-
-    hints.set(DecodeHintType.TRY_HARDER, true);
-    codeReader.reset();
-    codeReader.decodeFromVideoDevice(undefined, "barcode-scanner", (result, err) => {
-      if (result) {
-        setSku(result.text);
-        setShowScanner(false);
-        codeReader.reset();
-      }
-
-      if (err && !(err instanceof NotFoundException)) {
-        console.error(err);
-        setError("Failed to decode barcode.");
-      }
-    }, hints);
-  };
-
-
-  const stopScanning = () => {
-    codeReader.reset();
-    setShowScanner(false);
-  };
+  const hints = new Map();
+  hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+      BarcodeFormat.QR_CODE, BarcodeFormat.CODE_128, BarcodeFormat.CODE_39,
+      BarcodeFormat.EAN_13, BarcodeFormat.EAN_8, BarcodeFormat.CODABAR,
+      BarcodeFormat.ITF, BarcodeFormat.UPC_A, BarcodeFormat.UPC_E,
+      BarcodeFormat.PDF_417, BarcodeFormat.AZTEC, BarcodeFormat.DATA_MATRIX
+  ]);
+  codeReader.hints = hints;
 
   const handleScanButtonClick = () => {
-    setShowScanner(true);
-    startScanning();
+      setShowScanner(true);
+      startScanning();
   };
-  const initializeScanner = useCallback(() => {
-    const codeReader = new BrowserMultiFormatReader();
-    codeReader
-      .listVideoInputDevices()
-      .then((videoInputDevices) => {
-        const sourceSelect = document.getElementById("sourceSelect");
-        selectedDevice = videoInputDevices[0].deviceId;
+  const startScanning = () => {
+    setIsScanning(true);
+    codeReader.decodeFromVideoDevice(undefined, 'barcode-scanner', (result, err) => {
+        if (result) {
+            setIsScanning(false);
+            setSku(result.text);
+            setShowScanner(false);
 
-        // Specify the formats you want to support
-        codeReader.decodeFromVideoDevice(
-          selectedDevice,
-          "barcode-scanner",
-          (result, err) => {
-            if (result) {
-              // Successful scan
-              // Provide feedback (this can be visual or audio feedback)
-              // For now, we're just updating the SKU state
-              setSku(result.text);
-              setShowScanner(false);
-            }
-            if (err && !(err instanceof NotFoundException)) {
-              console.error(err);
-              setError("Error while scanning. Please try again.");
-            }
-          },
-          {
-            formats: [
-              BarcodeFormat.CODE_128,
-              BarcodeFormat.QR_CODE /* add other formats here */,
-            ],
-          }
-        );
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+        }
+        if (err && !(err instanceof NotFoundException)) {
+            setError("Failed to decode barcode. Adjust the distance or angle and try again.");
+        }
+    });
+};
+
+  
+
+  const stopScanning = () => {
+    setIsScanning(false);
+    codeReader.reset();
+    setShowScanner(false);
+};
+
+useEffect(() => {
+    return () => {
+        codeReader.reset();
+    };
+}, []);
   const handleSearch = useCallback(
     (e, scannedSku) => {
       const targetSku = scannedSku || sku;
@@ -206,6 +181,7 @@ export default function Home() {
                 <video id="barcode-scanner" className="scanner"></video>
                 <div className="guidelines"></div>
               </div>
+              {error && <p className="error-message">{error}</p>}
             </div>
             <button className="scan-button" onClick={startScanning}>
               Reset Scanning
