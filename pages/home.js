@@ -89,6 +89,7 @@ export default function Home() {
         type="button"
         className="scan-button"
         onClick={handleScanButtonClick}
+        
       >
             Start Scanning
           </button>
