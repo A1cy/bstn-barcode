@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { BrowserMultiFormatReader } from "@zxing/library";
+import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library';
 
 export default function Home() {
   const [sku, setSku] = useState("");
@@ -15,7 +15,23 @@ export default function Home() {
   const handleSkuChange = (e) => {
     setSku(e.target.value);
   };
-
+  
+  const hints = new Map();
+hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+    BarcodeFormat.QR_CODE,
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.CODE_39,
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.CODABAR,
+    BarcodeFormat.ITF,
+    BarcodeFormat.UPC_A,
+    BarcodeFormat.UPC_E,
+    BarcodeFormat.PDF_417,
+    BarcodeFormat.AZTEC
+]);
+hints.set(DecodeHintType.TRY_HARDER, true);
+  
   const codeReader = new BrowserMultiFormatReader();
 
   const startScanning = () => {
@@ -40,7 +56,32 @@ export default function Home() {
     setShowScanner(true);
     startScanning();
   };
-
+  const initializeScanner = useCallback(() => {
+    const codeReader = new BrowserMultiFormatReader();
+    codeReader.listVideoInputDevices().then(videoInputDevices => {
+        const sourceSelect = document.getElementById('sourceSelect');
+        selectedDevice = videoInputDevices[0].deviceId;
+        
+        // Specify the formats you want to support
+        codeReader.decodeFromVideoDevice(selectedDevice, 'barcode-scanner', (result, err) => {
+            if (result) {
+                // Successful scan
+                // Provide feedback (this can be visual or audio feedback)
+                // For now, we're just updating the SKU state
+                setSku(result.text);
+                setShowScanner(false);
+            }
+            if (err && !(err instanceof NotFoundException)) {
+                console.error(err);
+                setError('Error while scanning. Please try again.');
+            }
+        }, {
+            formats: [BarcodeFormat.CODE_128, BarcodeFormat.QR_CODE, /* add other formats here */]
+        });
+    }).catch(err => {
+        console.error(err);
+    });
+}, []);
   const handleSearch = useCallback(
     (e, scannedSku) => {
       const targetSku = scannedSku || sku;
@@ -150,11 +191,11 @@ export default function Home() {
     <div className="scanner-modal">
     <div className="scanner-content">
       <p className="scanner-instructions">
-        Place the QR or Barcode inside the box below
+      Ensure the barcode or QR code fills the scanning box for better accuracy.
       </p>
       <div className="container-scanner">
         <div className="scanner-content">
-          <video id="barcode-scanner"></video>
+          <video id="barcode-scanner" className="scanner"></video>
           <div className="guidelines"></div>
         </div>
       </div>
