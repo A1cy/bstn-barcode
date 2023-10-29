@@ -1,62 +1,95 @@
-
-import React, { useState } from 'react';
-// import QrReader from 'react-qr-reader';
+import { useRouter } from 'next/router';
+import { useState, useRef } from 'react';
+import { BrowserMultiFormatReader } from '@zxing/library';
 
 function Footer() {
+  const router = useRouter();
   const [showScanner, setShowScanner] = useState(false);
+  const [error, setError] = useState(null);
+  const codeReader = new BrowserMultiFormatReader();
 
-  const handleScan = data => {
-    if (data) {
-      console.log(`Scanned data: ${data}`);
-      setShowScanner(false); // Close the scanner after a successful scan
-    }
+  const startScanning = () => {
+    setError(null);
+    const videoElem = document.getElementById('barcode-scanner-footer');
+    codeReader.decodeFromVideoDevice(null, videoElem, (result, err) => {
+      if (result) {
+        // Scanned successfully
+        setShowScanner(false);
+        router.push(`/productDetail?sku=${result.text}`);
+      } else if (err && err.name !== 'NotFoundException') {
+        setError('Failed to decode barcode.');
+      }
+    });
   };
 
-  const handleError = err => {
-    console.error(err);
-    setShowScanner(false); // Close the scanner in case of an error
+  const stopScanning = () => {
+    codeReader.reset();
+    setShowScanner(false);
   };
 
   return (
     <footer>
       {/* ... other components ... */}
       <div className="navbar">
-            <a href="#" className="active">
-                <img src="pics/home-icon.png" alt="home" />
-                <p id="home-footer">HOME</p>
-              </a>
-            <div className="scanner-section">
-              <a href="#" onClick={e => {e.preventDefault(); setShowScanner(true)}}>
-                <img src="pics/scan-icon.png" alt="scan" />
-                <p id="scan-footer">SCAN A NEW PRODUCT</p>
-              </a>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            router.push("/home");
+          }}
+        >
+          <img src="pics/home-icon.png" alt="home" />
+          <p id="home-footer">HOME</p>
+        </a>
+        <div className="scanner-section">
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowScanner(true);
+              startScanning(true);
+            }}
+          >
+            <img src="pics/scan-icon.png" alt="scan" />
+            <p id="scan-footer">OPEN SCANNER</p>
+          </a>
+        </div>
 
-              {/* {showScanner && (
-                <div className="scanner-modal">
-                  <div className="scanner-content">
-                    <QrReader
-                      delay={300}
-                      onError={handleError}
-                      onScan={handleScan}
-                      style={{ width: '100%' }}
-                    />
-                    <button className="close-button" onClick={() => setShowScanner(false)}>Close</button>
-                  </div>
-                </div>
-              )} */}
-
-            </div>
-
-            <a href="#">
-                <img src="pics/list-icon.png" alt="list" />
-                <p id="list-footer">LIST</p>
-              </a>
+        <a href="#">
+          <img src="pics/list-icon.png" alt="list" />
+          <p id="list-footer">LIST</p>
+        </a>
       </div>
-      {/* ... other components ... */}
-      <div className="end-footer">
+{showScanner && (
+ <div className="scanner-modal">
+ <div className="scanner-content">
+   <p className="scanner-instructions">
+     Ensure the barcode or QR code fills the scanning box for better
+     accuracy.
+   </p>
+   <div className="container-scanner">
+     <div className="scanner-content">
+       <video id="barcode-scanner-footer" className="scanner"></video>
+       <div className="guidelines"></div>
+     </div>
+     {error && <p className="error-message">{error}</p>}
+   </div>
+   <button className="scan-button" onClick={startScanning}>
+     Start Scanning
+   </button>
+   <button className="close-button" onClick={stopScanning}>
+     Close Scanner
+   </button>
+ </div>
+</div>
+      )}      <div className="end-footer">
         <div id="left-end-footer">
-          <a href="#" id="terms">Terms and Conditions</a>
-          <a href="#" className="space-between1" id="privacy">Privacy Policy</a>
+          <a href="#" id="terms">
+            Terms and Conditions
+          </a>
+          <a href="#" className="space-between1" id="privacy">
+            Privacy Policy
+          </a>
         </div>
         <div id="space-between2"></div>
         <div id="right-end-footer">
