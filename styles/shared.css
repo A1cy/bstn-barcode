@@ -2449,6 +2449,24 @@ i.barcode-icon {
   background: linear-gradient(white, white) left top, linear-gradient(white, white) left top, linear-gradient(white, white) right top, linear-gradient(white, white) right top, linear-gradient(white, white) left bottom, linear-gradient(white, white) left bottom, linear-gradient(white, white) right bottom, linear-gradient(white, white) right bottom;
   background-repeat: no-repeat;
   background-size: 2px 24px, 24px 2px;
+
+  width: 50%;
+  height: calc(65% - 30px); /* Adjust based on the video's height */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(#fff, #fff) left top, 
+              linear-gradient(#fff, #fff) left top, 
+              linear-gradient(#fff, #fff) right top, 
+              linear-gradient(#fff, #fff) right top, 
+              linear-gradient(#fff, #fff) left bottom, 
+              linear-gradient(#fff, #fff) left bottom, 
+              linear-gradient(#fff, #fff) right bottom, 
+              linear-gradient(#fff, #fff) right bottom;
+  background-repeat: no-repeat;
+  background-size: 3px 24px, 24px 3px;
+  z-index: 2;
 }
 
 .container-scanner .scanner-content::before {
@@ -2473,3 +2491,4 @@ i.barcode-icon {
     opacity: 0;
   }
 }
+
