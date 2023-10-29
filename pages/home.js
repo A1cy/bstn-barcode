@@ -64,39 +64,45 @@ useEffect(() => {
         codeReader.reset();
     };
 }, []);
-  const handleSearch = useCallback(
-    (e, scannedSku) => {
-      const targetSku = scannedSku || sku;
-      if (e) e.preventDefault();
-      axios
-        .post("/api/get-product", { sku: targetSku })
-        .then((response) => {
-          if (response.data && response.data.slug && response.data.category) {
-            return axios.get(
-              `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
-            );
-          } else {
-            throw new Error("Product not found");
-          }
-        })
-        .then((detailResponse) => {
-          setProductDetail(detailResponse.data);
-          setError(null);
-        })
-        .catch((err) => {
-          console.error(err);
-          if (
-            err.message === "Product not found" ||
-            (err.response && err.response.status === 404)
-          ) {
-            setError("Product not found");
-          } else {
-            setError("Failed to fetch product");
-          }
-        });
-    },
-    [sku]
-  );
+
+const handleSearch = () => {
+  router.push(`/productDetail?sku=${sku}`);
+};
+
+
+  // const handleSearch = useCallback(
+  //   (e, scannedSku) => {
+  //     const targetSku = scannedSku || sku;
+  //     if (e) e.preventDefault();
+  //     axios
+  //       .post("/api/get-product", { sku: targetSku })
+  //       .then((response) => {
+  //         if (response.data && response.data.slug && response.data.category) {
+  //           return axios.get(
+  //             `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
+  //           );
+  //         } else {
+  //           throw new Error("Product not found");
+  //         }
+  //       })
+  //       .then((detailResponse) => {
+  //         setProductDetail(detailResponse.data);
+  //         setError(null);
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         if (
+  //           err.message === "Product not found" ||
+  //           (err.response && err.response.status === 404)
+  //         ) {
+  //           setError("Product not found");
+  //         } else {
+  //           setError("Failed to fetch product");
+  //         }
+  //       });
+  //   },
+  //   [sku]
+  // );
 
   return (
     <div className="container-home">

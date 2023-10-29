@@ -1,6 +1,6 @@
-import { useRouter } from 'next/router';
-import { useState, useRef } from 'react';
-import { BrowserMultiFormatReader } from '@zxing/library';
+import { useRouter } from "next/router";
+import { useState } from 'react';
+import { BrowserMultiFormatReader } from "@zxing/library";
 
 function Footer() {
   const router = useRouter();
@@ -10,14 +10,14 @@ function Footer() {
 
   const startScanning = () => {
     setError(null);
-    const videoElem = document.getElementById('barcode-scanner-footer');
+    const videoElem = document.getElementById("barcode-scanner-footer");
     codeReader.decodeFromVideoDevice(null, videoElem, (result, err) => {
       if (result) {
         // Scanned successfully
         setShowScanner(false);
         router.push(`/productDetail?sku=${result.text}`);
-      } else if (err && err.name !== 'NotFoundException') {
-        setError('Failed to decode barcode.');
+      } else if (err && err.name !== "NotFoundException") {
+        setError("Failed to decode barcode.");
       }
     });
   };
@@ -47,7 +47,7 @@ function Footer() {
             onClick={(e) => {
               e.preventDefault();
               setShowScanner(true);
-              startScanning(true);
+              startScanning();
             }}
           >
             <img src="pics/scan-icon.png" alt="scan" />
@@ -60,29 +60,30 @@ function Footer() {
           <p id="list-footer">LIST</p>
         </a>
       </div>
-{showScanner && (
- <div className="scanner-modal">
- <div className="scanner-content">
-   <p className="scanner-instructions">
-     Ensure the barcode or QR code fills the scanning box for better
-     accuracy.
-   </p>
-   <div className="container-scanner">
-     <div className="scanner-content">
-       <video id="barcode-scanner-footer" className="scanner"></video>
-       <div className="guidelines"></div>
-     </div>
-     {error && <p className="error-message">{error}</p>}
-   </div>
-   <button className="scan-button" onClick={startScanning}>
-     Start Scanning
-   </button>
-   <button className="close-button" onClick={stopScanning}>
-     Close Scanner
-   </button>
- </div>
-</div>
-      )}      <div className="end-footer">
+      {showScanner && (
+        <div className="scanner-modal">
+          <div className="scanner-content">
+            <p className="scanner-instructions">
+              Ensure the barcode or QR code fills the scanning box for better
+              accuracy.
+            </p>
+            <div className="container-scanner">
+              <div className="scanner-content">
+                <video id="barcode-scanner-footer" className="scanner"></video>
+                <div className="guidelines"></div>
+              </div>
+              {error && <p className="error-message">{error}</p>}
+            </div>
+            <button className="scan-button" onClick={startScanning}>
+              Start Scanning
+            </button>
+            <button className="close-button" onClick={stopScanning}>
+              Close Scanner
+            </button>
+          </div>
+        </div>
+      )}{" "}
+      <div className="end-footer">
         <div id="left-end-footer">
           <a href="#" id="terms">
             Terms and Conditions
