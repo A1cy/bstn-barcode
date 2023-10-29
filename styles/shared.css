@@ -2039,7 +2039,7 @@ button.user-log {
   margin: 0 auto;
 }
 .to-image {
-  width: 100%;
+  width: auto;
   height: auto;
 }
 .product-image {
@@ -2405,8 +2405,7 @@ i.barcode-icon {
 
 
 .scanner-modal {
-  height: 100vh;
-  width: 100vw;
+
   background: rgba(0, 0, 0, 0.8);
   position: fixed;
   top: 0;
@@ -2418,7 +2417,8 @@ i.barcode-icon {
 }
 
 .scanner-content {
- 
+  min-width: 80%;
+  width: -webkit-fill-available;
   text-align: center;
 }
 
@@ -2451,7 +2451,7 @@ i.barcode-icon {
   background-size: 2px 24px, 24px 2px;
 
   width: 50%;
-  height: calc(65% - 30px); /* Adjust based on the video's height */
+  height: 50%; /* Adjust based on the video's height */
   position: absolute;
   top: 50%;
   left: 50%;
@@ -2492,16 +2492,12 @@ i.barcode-icon {
   }
 }
 
-/* ... Existing styles ... */
 
-/* Scanner enhancements */
- 
  
 
 /* More pronounced scanner area */
 #barcode-scanner {
-  width: 100%;
-  height: 200px;
+
   
  
   margin: 20px 0;
