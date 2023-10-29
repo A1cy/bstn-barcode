@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { BrowserMultiFormatReader } from '@zxing/library';
+import { BrowserBarcodeReader } from '@zxing/library';
 
 export default function Home() {
   const [sku, setSku] = useState("");
@@ -16,60 +16,126 @@ export default function Home() {
     setSku(e.target.value);
   };
 
-  const codeReader = new BrowserMultiFormatReader();
+  const codeReader = new BrowserBarcodeReader();
+  const videoRef = React.createRef();
 
   const startScanning = () => {
-    codeReader.decodeFromInputVideoDevice(undefined, 'barcode-scanner')
+    setShowScanner(true);
+    codeReader.decodeFromVideoDevice(undefined, videoRef.current)
       .then(result => {
-        setSku(result.text);
-        handleSearch(null, result.text);
-        setShowScanner(false);
-      }).catch(err => console.error(err));
+        if (result) {
+          setSku(result.text);
+          handleSearch(null, result.text);
+          stopScanning();
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const stopScanning = () => {
     codeReader.reset();
-  };
-
-  const handleScanButtonClick = () => {
-    setShowScanner(true);
+    setShowScanner(false);
   };
 
   const handleSearch = useCallback(
-    (e, scannedSku) => {
+    async (e, scannedSku) => {
       const targetSku = scannedSku || sku;
       if (e) e.preventDefault();
-      axios
-        .post("/api/get-product", { sku: targetSku })
-        .then((response) => {
-          if (response.data && response.data.slug && response.data.category) {
-            return axios.get(
-              `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
-            );
-          } else {
-            throw new Error("Product not found");
-          }
-        })
-        .then((detailResponse) => {
+
+      try {
+        const response = await axios.post("/api/get-product", {
+          sku: targetSku,
+        });
+
+        if (response.data && response.data.slug && response.data.category) {
+          const detailResponse = await axios.get(
+            `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
+          );
+
           setProductDetail(detailResponse.data);
           setError(null);
-        })
-        .catch((err) => {
-          console.error(err);
-          if (
-            err.message === "Product not found" ||
-            (err.response && err.response.status === 404)
-          ) {
-            setError("Product not found");
-          } else {
-            setError("Failed to fetch product");
-          }
-        });
+        } else {
+          throw new Error("Product not found");
+        }
+      } catch (err) {
+        if (
+          err.message === "Product not found" ||
+          (err.response && err.response.status === 404)
+        ) {
+          setError("Product not found");
+        } else {
+          setError("Failed to fetch product");
+        }
+      }
     },
     [sku]
   );
 
+  const captureBarcode = useCallback(() => {
+    if (webcamRef.current && webcamRef.current.video) {
+      const videoElement = webcamRef.current.video;
 
+      Quagga.init(
+        {
+          inputStream: {
+            type: "LiveStream",
+            target: videoElement,
+            constraints: {
+              width: 1280,  // Higher resolution for better scanning
+              height: 720,
+              facingMode: "environment",
+            },
+          },
+          locator: {
+            patchSize: "large",
+            halfSample: true,
+          },
+          numOfWorkers: navigator.hardwareConcurrency || 4,
+          decoder: {
+            readers: [
+              "code_128_reader",
+              "ean_reader",
+              "ean_8_reader",
+              "code_39_reader",
+              "code_39_vin_reader",
+              "codabar_reader",
+              "upc_reader",
+              "upc_e_reader",
+              "i2of5_reader",
+            ],
+            multiple: false,
+          },
+          locate: true,
+        },
+        function (err) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+
+          Quagga.start();
+
+          Quagga.onDetected((result) => {
+            console.log(result.codeResult.code);
+            setSku(result.codeResult.code);
+            handleSearch(null, result.codeResult.code);
+            setShowScanner(false);
+            Quagga.stop();
+          });
+        }
+      );
+    }
+  }, [webcamRef, handleSearch]);
+
+  const closeScanner = useCallback(() => {
+    if (webcamRef.current && webcamRef.current.stream) {
+      const tracks = webcamRef.current.stream.getTracks();
+      tracks.forEach((track) => {
+        track.stop();
+      });
+    }
+    setShowScanner(false);
+  }, []);
 
   return (
     <div className="container-home">
@@ -88,10 +154,10 @@ export default function Home() {
           <i className="barcode-icon"></i>
           <br />
           <button
-        type="button"
-        className="scan-button"
-        onClick={handleScanButtonClick}
-      >
+            type="button"
+            className="scan-button"
+            onClick={handleScanButtonClick}
+          >
             Start Scanning
           </button>
         </main>

@@ -1,12 +1,10 @@
-
-
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import jsQR from "jsqr";
-import Quagga from "quagga";
+import Quagga from "quagga"; // Use Quagga2
 import Image from "next/image";
 import Webcam from "react-webcam";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [sku, setSku] = useState("");
@@ -14,10 +12,10 @@ export default function Home() {
   const [productDetail, setProductDetail] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
   const [scanMode, setScanMode] = useState(null);
-  const [showInstructions, setShowInstructions] = useState(true);
   const webcamRef = useRef(null);
+  const [showInstructions, setShowInstructions] = useState(true);
 
-  const router = useRouter();
+  const router = useRouter(); // <-- Initialize the router object using useRouter hook
 
   const handleSkuChange = (e) => {
     setSku(e.target.value);
@@ -28,31 +26,40 @@ export default function Home() {
     setShowScanner(true);
     setScanMode(mode);
   };
-
-  const handleSearch = useCallback(async (e, scannedSku) => {
-    const targetSku = scannedSku || sku;
-    if (e) e.preventDefault();
-    try {
-      const response = await axios.post("/api/get-product", {
-        sku: targetSku,
-      });
-      if (response.data && response.data.slug && response.data.category) {
-        const detailResponse = await axios.get(
-          `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
-        );
-        setProductDetail(detailResponse.data);
-        setError(null);
-      } else {
-        throw new Error("Product not found");
-      }
-    } catch (err) {
-      if (err.message === "Product not found" || (err.response && err.response.status === 404)) {
-        setError("Product not found");
-      } else {
-        setError("Failed to fetch product");
-      }
-    }
-  }, [sku]);
+  // Wrapped handleSearch with useCallback and added dependencies
+  const handleSearch = useCallback(
+    (e, scannedSku) => {
+      const targetSku = scannedSku || sku;
+      if (e) e.preventDefault();
+      axios
+        .post("/api/get-product", { sku: targetSku })
+        .then((response) => {
+          if (response.data && response.data.slug && response.data.category) {
+            return axios.get(
+              `/api/get-product-detail?slug=${response.data.slug}&category=${response.data.category}`
+            );
+          } else {
+            throw new Error("Product not found");
+          }
+        })
+        .then((detailResponse) => {
+          setProductDetail(detailResponse.data);
+          setError(null);
+        })
+        .catch((err) => {
+          console.error(err);
+          if (
+            err.message === "Product not found" ||
+            (err.response && err.response.status === 404)
+          ) {
+            setError("Product not found");
+          } else {
+            setError("Failed to fetch product");
+          }
+        });
+    },
+    [sku]
+  ); // Add other dependencies if needed
 
   const captureQR = useCallback(() => {
     if (webcamRef.current) {
@@ -86,41 +93,48 @@ export default function Home() {
   }, [webcamRef, handleSearch]);
 
   const captureBarcode = useCallback(() => {
-    if (webcamRef.current) {
+    if (webcamRef.current && webcamRef.current.video) {
       const videoElement = webcamRef.current.video;
+
       Quagga.init({
         inputStream: {
           type: "LiveStream",
           constraints: {
-            width: videoElement.width,
-            height: videoElement.height,
+            width: videoElement.clientWidth,
+            height: videoElement.clientHeight,
             facingMode: "environment",
-            aspectRatio: videoElement.width / videoElement.height,
           },
           target: videoElement,
         },
+        locator: {
+          patchSize: "medium",
+          halfSample: true,
+        },
+        numOfWorkers: 4,
+        frequency: 10,
         decoder: {
           readers: [
-            "code_128_reader", 
-            "ean_reader", 
-            "ean_8_reader", 
-            "code_39_reader", 
-            "code_39_vin_reader", 
-            "codabar_reader", 
-            "upc_reader", 
-            "upc_e_reader", 
-            "i2of5_reader", 
-            "2of5_reader", 
-            "code_93_reader"
-          ]
-                },
+            "code_128_reader",
+            "ean_reader",
+            "ean_8_reader",
+            "code_39_reader",
+            "code_39_vin_reader",
+            "codabar_reader",
+            "upc_reader",
+            "upc_e_reader",
+            "i2of5_reader",
+          ],
+          multiple: false,
+        },
       }, (err) => {
         if (err) {
           console.log(err);
           return;
         }
         Quagga.start();
+
         Quagga.onDetected((result) => {
+          console.log(result.codeResult.code);
           setSku(result.codeResult.code);
           handleSearch(null, result.codeResult.code);
           setShowScanner(false);
@@ -130,6 +144,25 @@ export default function Home() {
     }
   }, [webcamRef, handleSearch]);
 
+  useEffect(() => {
+    if (showScanner) {
+      const intervalId = setInterval(() => {
+        setScanMode((prevMode) => (prevMode === "QR" ? "BARCODE" : "QR"));
+      }, 1000); // Switch mode every second or adjust as needed
+      return () => clearInterval(intervalId);
+    }
+  }, [showScanner]); // Corrected dependencies
+
+  useEffect(() => {
+    if (showScanner) {
+      if (scanMode === "QR") {
+        captureQR();
+      } else if (scanMode === "BARCODE") {
+        captureBarcode();
+      }
+    }
+  }, [showScanner, scanMode, captureQR, captureBarcode]); // Corrected dependencies
+
   const closeScanner = useCallback(() => {
     if (webcamRef.current && webcamRef.current.stream) {
       const tracks = webcamRef.current.stream.getTracks();
@@ -138,12 +171,11 @@ export default function Home() {
       });
     }
     setShowScanner(false);
-    setScanMode(null);
   }, []);
 
   return (
     <div className="container-home">
-  <header className="home-header">
+      <header className="home-header">
         <Image
           src="/pics/BuildStation-logo.png"
           alt="Logo"
@@ -160,9 +192,16 @@ export default function Home() {
           <button
             type="button"
             className="scan-button"
-            onClick={handleScanButtonClick}
+            onClick={() => handleScanButtonClick("QR")}
           >
-            Start Scanning 1
+            Start QR Scanning
+          </button>
+          <button
+            type="button"
+            className="scan-button"
+            onClick={() => handleScanButtonClick("BARCODE")}
+          >
+            Start Barcode Scanning
           </button>
         </main>
         <br />
@@ -191,13 +230,11 @@ export default function Home() {
         </div>
         <div id="output">
           {error && <p className="error-message">{error}</p>}
-
           {productDetail && productDetail.item && productDetail.meta_data && (
             <div className="product-details">
               <h2>
                 <strong>Product Name:</strong> {productDetail.item.title}
               </h2>
-
               <Image
                 src={`https://dyq4yrh81omo6.cloudfront.net/items/290/${productDetail.meta_data.image.replace(
                   "items/",
@@ -206,12 +243,11 @@ export default function Home() {
                 alt={
                   productDetail.meta_data.image_alt || productDetail.item.title
                 }
-                width={150}
-                height={150}
+                width={100}
+                height={100}
+                className="to-image"
               />
-
               <p>Price: {productDetail.item.price}</p>
-              {/* <h3>{productDetail.meta_data.meta_title}</h3> */}
               <p>{productDetail.meta_data.meta_description}</p>
               <button
                 className="to-product-details"
@@ -222,7 +258,9 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>      {showScanner && (
+      </div>
+
+      {showScanner && (
         <div className="scanner-modal">
           <div className="scanner-content">
             <Webcam
@@ -231,14 +269,16 @@ export default function Home() {
               screenshotFormat="image/jpeg"
               videoConstraints={{ facingMode: "environment" }}
               onUserMedia={() => {
-                if (scanMode === "QR") {
-                  captureQR();
-                } else if (scanMode === "BARCODE") {
+                if (scanMode === "BARCODE") {
                   captureBarcode();
+                } else if (scanMode === "QR") {
+                  captureQR();
                 }
               }}
             />
-            <button className="close-button" onClick={closeScanner}>Close Scanner</button>
+            <button className="close-button" onClick={closeScanner}>
+              Close Scanner
+            </button>
           </div>
         </div>
       )}
