@@ -25,7 +25,7 @@ const CustomArrow = ({ type, onClick }) => {
   );
 };
 
-const ProductSlider = ({ title, uuid }) => {
+const ProductSlider = ({ title, uuid, item_code}) => {
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
@@ -43,10 +43,10 @@ const ProductSlider = ({ title, uuid }) => {
     }
   }, [uuid]);
 
-  const navigateToProductDetail = (e, sku) => {
+  const navigateToProductDetail = (e, item_code) => {
     e.preventDefault();
-    if (sku) {
-      router.push(`/productDetail?sku=${sku}`);
+    if (item_code) {
+      router.push(`/productDetail?sku=${item_code}`);
     } else {
       console.error("SKU is undefined for this product. Navigation aborted.");
     }
@@ -96,19 +96,19 @@ const ProductSlider = ({ title, uuid }) => {
                     const defaultImage = product.item?.default_image;
                     const title = product.item?.item_lang?.[0]?.title;
                     const price = product.variant?.regular_price || "N/A";
-                    const sku = product.variant?.item_variant_sku;
+                    const item_code = product.variant?.item_code;
 
-                    if (!sku) {
-                      console.error("Missing SKU for product:", product);
-                    }
+                    // if (!item_code) {
+                    //   console.error("Missing SKU for product:", product);
+                    // }
 
                     return (
                       <div key={index} className="col-sm-4 splide__slide m-2">
                         <div className="card text-white">
                           <div className="card-body">
                             <a
-                              href="#"
-                              onClick={(e) => navigateToProductDetail(e, sku)}
+                               
+                              onClick={(e) => navigateToProductDetail(e, item_code)}
                             >
                               <img
                                 src={`https://dyq4yrh81omo6.cloudfront.net/items/290/${defaultImage}`}
@@ -117,11 +117,11 @@ const ProductSlider = ({ title, uuid }) => {
                             </a>
                             <p className="card-title">{title}</p> 
                             <span className="product-sku">
-                              SKU: {sku}
+                              {/* SKU: {item_code} */}
                             </span>
                             <div className="price inline">
                               <p className="card-price">{price}</p>
-                              <h3 className="card-currency">SAR</h3>
+                              {/* <h3 className="card-currency">SAR</h3> */}
                             </div>
 {/*                             
                            

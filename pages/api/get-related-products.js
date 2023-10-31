@@ -1,23 +1,27 @@
 import axios from 'axios';
 
+const API_ENDPOINT = `https://staging-ksa-v2.build-station.com/build-station-apis-v2/api/items/related_products_categories/`;
+
+const apiConfig = {
+    headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'Ujf4ZHdP3zHrmfsvAETpUmvK7BPS/jU/YKCp+VXaF1A=',
+        'lang': 'en',
+        'currency': 'SAR',
+        'country': 'SA'
+    }
+};
+
 export default async function handler(req, res) {
     const { uuid } = req.query;
-    console.log('Received UUID:', uuid);
+
+    // Check if UUID is provided
+    if (!uuid) {
+        return res.status(400).json({ error: 'UUID is required' });
+    }
 
     try {
-        const relatedProductsResponse = await axios.get(
-            `https://staging-ksa-v2.build-station.com/build-station-apis-v2/api/items/related_products_categories/${uuid}`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'apikey': 'Ujf4ZHdP3zHrmfsvAETpUmvK7BPS/jU/YKCp+VXaF1A=',
-                    'lang': 'en',
-                    'currency': 'SAR',
-                    'country': 'SA'
-                }
-            }
-        );
-        const relatedProducts = relatedProductsResponse.data.data;
+        const { data: { data: relatedProducts = [] } = {} } = await axios.get(`${API_ENDPOINT}${uuid}`, apiConfig);
 
         // Extract the SKU from the first variant of each product
         relatedProducts.forEach(product => {
@@ -29,8 +33,9 @@ export default async function handler(req, res) {
         console.log("Processed Related Products:", relatedProducts);  // Logging to check the data
 
         res.status(200).json({ data: relatedProducts });
+
     } catch (error) {
-        console.error("Error fetching related products in API Handler:", error);
-        res.status(500).json({ error: 'Error fetching related products in API Handler' });
+        console.error("Error fetching related products:", error.message);
+        res.status(500).json({ error: 'Failed to fetch related products' });
     }
 }

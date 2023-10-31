@@ -87,10 +87,10 @@ export default function ProductDetailPage() {
         </header>
         <div id="welcome">
           <main className="home-main">
-            <p className="error-message">{error}</p>
 
             <i className="barcode-icon-error"></i>
             <br />
+            <p className="error-message">{error}</p>
             <button
               type="button"
               className="scan-button"
@@ -104,23 +104,37 @@ export default function ProductDetailPage() {
           </main>
         </div>
       </div>
+     
     );
   }
 
   if (!productData) {
     return (
-      <div className="centered-container">
-        <Image
-          className="spinner-logo"
-          src="/pics/BuildStation-logo.png"
-          alt="Logo"
-          width={100}
-          height={100}
-          layout="responsive"
-        />
-        <div className="spinner"></div>
-        <p>Loading product Details: {title}...</p>
-      </div>
+     
+       <div className="container-home">
+       <header className="home-header">
+         <Image
+           src="/pics/BuildStation-logo.png"
+           alt="Logo"
+           width={150}
+           height={150}
+           className="logo"
+           layout="responsive"
+         />
+       </header>
+       <div id="welcome">
+         <main className="home-main">
+       
+
+           <i className="barcode-icon"></i>
+           <br />
+           <div className="spinner"></div>
+          {/* <p>Loading product Details: {title}...</p> */}
+          <p>{title ? title : "Loading Product Details..."} | <b> SKU: {sku} </b> </p>
+         
+         </main>
+       </div>
+     </div>
     );
   }
 
