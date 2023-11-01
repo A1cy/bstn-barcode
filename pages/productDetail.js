@@ -148,7 +148,7 @@ export default function ProductDetailPage() {
         <DescriptionSpecification data={productData} />
       </div>
       <ProductSlider title="Related Products" uuid={uuid} />
-      <ProductSlider title="Cross Selling Products" uuid={uuid} />
+      {/* <ProductSlider title="Cross Selling Products" uuid={uuid} /> */}
       <Footer />
     </div>
   );

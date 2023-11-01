@@ -1,29 +1,26 @@
 import React from 'react';
-
+ 
 const DescriptionSpecification = ({ data }) => {
   if (!data || !data.item) return null;
 
-  const { info, short_info,short_description, attributes, manuals, videos, application } = data.item;
-
+  const { short_info, attributes, manuals, application, videos } = data.item;
   const baseURL = "https://dyq4yrh81omo6.cloudfront.net/manuals/";
-  const applicationBaseURL = "https://dyq4yrh81omo6.cloudfront.net/items/580/";
+  const appImageBaseURL = "https://dyq4yrh81omo6.cloudfront.net/items/580/";
 
   return (
     <div className="Description-Specification-container">
+      {/* Description section */}
       {short_info && (
         <div className="inline-Description">
-          <div className="Description ">
+          <div className="Description">
             <p id="Description-heading">Description</p>
             <hr />
-            <div dangerouslySetInnerHTML={{ __html: info }} id="Description-content"></div>
-            <hr />
             <div dangerouslySetInnerHTML={{ __html: short_info }} id="Description-content"></div>
-            <hr />
-            <div dangerouslySetInnerHTML={{ __html: short_description }} id="Description-content"></div>
           </div>
         </div>
       )}
 
+      {/* Specification section */}
       {attributes && attributes.length > 0 && (
         <div className="Specification">
           <p id="Specification">Specification</p>
@@ -41,6 +38,7 @@ const DescriptionSpecification = ({ data }) => {
         </div>
       )}
 
+      {/* User-manual section */}
       {manuals && manuals.manual && manuals.manual.length > 0 && (
         <div className="padding-user-manual">
           <div className="user-manual">
@@ -58,35 +56,40 @@ const DescriptionSpecification = ({ data }) => {
         </div>
       )}
 
+      {/* Application Images */}
       {application && application.images && application.images.length > 0 && (
         <div className="application-images-section">
+        <div className="application-images">
           <p id="Application-images">Application Images</p>
           <hr />
-          <div className="application-image-container">
+          <div className="image-grid">
             {application.images.map((image, index) => (
-                <div key={index} className="application-image-container">
-              <img className="application-image" src={`${applicationBaseURL}${image}`} alt={`Application ${index + 1}`} />
-            </div>
+              <img key={index} src={`${appImageBaseURL}${image}`} alt="Application" />
             ))}
           </div>
         </div>
+        </div>
       )}
 
+      {/* Videos */}
       {videos && videos.length > 0 && (
-        <div className="videos">
+        <div className="video-section">
           <p id="Videos">Videos</p>
           <hr />
-          {videos.map((video, index) => (
-            <iframe
-              key={index}
-              width="560"
-              height="315"
-              src={`https://www.youtube.com/embed/${video}`}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          ))}
+          <div className="video-grid">
+            {videos.map((video, index) => (
+              <iframe
+                key={index}
+                width="560"
+                height="315"
+                src={`https://www.youtube.com/embed/${video}`}
+                title="YouTube video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ))}
+          </div>
         </div>
       )}
     </div>
