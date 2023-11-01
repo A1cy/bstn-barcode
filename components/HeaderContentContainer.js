@@ -27,7 +27,7 @@ const HeaderContentContainer = () => {
               </form>
             </div>{" "}
             {/* logo */}{" "}
-            <Link  className="navbar-brand" href="#">
+            <Link  className="navbar-brand" href="/">
               <img
                 src="pics\BuildStation-logo.png"
                 className="logo"

@@ -1105,6 +1105,8 @@ div .inline {
 .Description-Specification-container {
   padding-top: 3%;
   display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
   
 }
 .inline-Description {
@@ -1114,7 +1116,7 @@ div .inline {
   flex-direction: column;
 }
 .Description {
-  border: 1px solid rgba(64, 69, 83, 0.2);
+  /* border: 1px solid rgba(64, 69, 83, 0.2); */
   border-radius: 10px;
 }
 #Description-heading {
@@ -1179,9 +1181,9 @@ div .inline {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  width: 50%;
+  width: 47%;
   /* padding: 2%; */
-  border: 1px solid rgba(64, 69, 83, 0.2);
+  /* border: 1px solid rgba(64, 69, 83, 0.2); */
   border-radius: 10px;
 }
 tr:nth-child(even) {
@@ -1239,7 +1241,7 @@ tr:nth-child(even) {
   padding-bottom: 5%;
 }
 .user-manual {
-  border: 1px solid rgba(64, 69, 83, 0.2);
+  /* border: 1px solid rgba(64, 69, 83, 0.2); */
   border-radius: 10px;
   width: 99.2%;
 }
@@ -2659,7 +2661,7 @@ margin: 2em;
  
 }
 .application-images-section  {
-  border: 1px solid rgba(64, 69, 83, 0.2);
+  /* border: 1px solid rgba(64, 69, 83, 0.2); */
   border-radius: 10px;
   width: 99.2%; 
   /* margin-top: 1%; */
@@ -2675,7 +2677,7 @@ color: #73cde1;
 }
 .application-image {
   flex: 1 1 calc(22.222% - 20px); /* Each image takes up roughly one-third of the container width, minus the gap */
-  border: 1px solid rgba(64, 69, 83, 0.2);
+  /* border: 1px solid rgba(64, 69, 83, 0.2); */
   border-radius: 10px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
