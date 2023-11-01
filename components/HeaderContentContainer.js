@@ -1,5 +1,5 @@
 import React from "react";
-
+import Link from 'next/link';
 // Header and content container
 const HeaderContentContainer = () => {
   return (
@@ -27,13 +27,13 @@ const HeaderContentContainer = () => {
               </form>
             </div>{" "}
             {/* logo */}{" "}
-            <a className="navbar-brand" href="/">
+            <Link  className="navbar-brand" href="#">
               <img
                 src="pics\BuildStation-logo.png"
                 className="logo"
                 alt="build-station logo"
               />
-            </a>
+            </Link>
           </nav>
           <hr className="divider-bottom" />
         </div>
