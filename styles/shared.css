@@ -1359,6 +1359,7 @@ tr:nth-child(even) {
 }
 .card p {
   color: black;
+  height: 5em;
 }
 .container img {
   width: 100%;
