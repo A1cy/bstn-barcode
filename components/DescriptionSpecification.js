@@ -4,7 +4,8 @@ const DescriptionSpecification = ({ data }) => {
   if (!data || !data.item) return null;
 
   const { info, attributes, manuals, videos, application } = data.item;
-  const baseURL = "https://dyq4yrh81omo6.cloudfront.net/manuals/";
+  const manualBaseURL = "https://dyq4yrh81omo6.cloudfront.net/manuals/";
+  const applicationImageBaseURL = "https://dyq4yrh81omo6.cloudfront.net/items/580/";
 
   return (
     <div className="Description-Specification-container">
@@ -41,7 +42,7 @@ const DescriptionSpecification = ({ data }) => {
           <div className="pdf-icon-padding">
             {manuals && manuals.manual && manuals.manual.length > 0 ? (
               manuals.manual.map((manual, index) => (
-                <a key={index} href={`${baseURL}${manual.file}`} download>
+                <a key={index} href={`${manualBaseURL}${manual.file}`} download>
                   <img className="pdf-icon" src="/pics/pdf-icon.png" alt="pdf" />
                   <span id="User-manual-pdf">{manual.title}</span>
                 </a>
@@ -58,12 +59,16 @@ const DescriptionSpecification = ({ data }) => {
         <p id="Videos">Videos</p>
         <hr />
         {videos && videos.length > 0 ? (
-          videos.map((video, index) => (
-            // You might need to adjust how the video is displayed.
-            <video key={index} width="320" height="240" controls>
-              <source src={video.url} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+        videos.map((videoURL, index) => (
+            <iframe
+              key={index}
+              width="560"
+              height="315"
+              src={videoURL}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
           ))
         ) : (
           <p>No videos available.</p>
@@ -74,13 +79,17 @@ const DescriptionSpecification = ({ data }) => {
       <div className="application-images-section">
         <p id="ApplicationImages">Application Images</p>
         <hr />
+        <div className="application-images-container">
         {application && application.images && application.images.length > 0 ? (
           application.images.map((image, index) => (
-            <img key={index} src={image.url} alt={`Application Image ${index + 1}`} />
-          ))
+            <div key={index} className="application-image-container">
+            <img className="application-image" src={`https://dyq4yrh81omo6.cloudfront.net/items/580/${image}`} alt={`Application ${index + 1}`} />  
+            </div>       
+             ))
         ) : (
           <p>No application images available.</p>
         )}
+        </div>
       </div>
     </div>
   );

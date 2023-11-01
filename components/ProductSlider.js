@@ -119,10 +119,10 @@ const ProductSlider = ({ title, uuid, item_code}) => {
                             <span className="product-sku">
                               {/* SKU: {item_code} */}
                             </span>
-                            <div className="price inline">
+                            {/* <div className="price inline">
                               <p className="card-price">{price}</p>
-                              {/* <h3 className="card-currency">SAR</h3> */}
-                            </div>
+                              <h3 className="card-currency">SAR</h3> 
+                            </div> */}
 {/*                             
                            
                             
