@@ -13,10 +13,10 @@ export default function Home() {
   const [productDetail, setProductDetail] = useState(null);
   const router = useRouter();
   const [showScanner, setShowScanner] = useState(false);
-  const [sku, setSku] = useState('');
+  const [sku, setSku] = useState("");
   const [error, setError] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
-  
+
   const codeReader = new BrowserMultiFormatReader();
 
   const handleSkuChange = (e) => {
@@ -25,50 +25,60 @@ export default function Home() {
 
   const hints = new Map();
   hints.set(DecodeHintType.POSSIBLE_FORMATS, [
-      BarcodeFormat.QR_CODE, BarcodeFormat.CODE_128, BarcodeFormat.CODE_39,
-      BarcodeFormat.EAN_13, BarcodeFormat.EAN_8, BarcodeFormat.CODABAR,
-      BarcodeFormat.ITF, BarcodeFormat.UPC_A, BarcodeFormat.UPC_E,
-      BarcodeFormat.PDF_417, BarcodeFormat.AZTEC, BarcodeFormat.DATA_MATRIX
+    BarcodeFormat.QR_CODE,
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.CODE_39,
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.CODABAR,
+    BarcodeFormat.ITF,
+    BarcodeFormat.UPC_A,
+    BarcodeFormat.UPC_E,
+    BarcodeFormat.PDF_417,
+    BarcodeFormat.AZTEC,
+    BarcodeFormat.DATA_MATRIX,
   ]);
   codeReader.hints = hints;
 
   const handleScanButtonClick = () => {
-      setShowScanner(true);
-      startScanning();
+    setShowScanner(true);
+    startScanning();
   };
   const startScanning = () => {
     setIsScanning(true);
-    codeReader.decodeFromVideoDevice(undefined, 'barcode-scanner', (result, err) => {
+    codeReader.decodeFromVideoDevice(
+      undefined,
+      "barcode-scanner",
+      (result, err) => {
         if (result) {
-            setIsScanning(false);
-            setSku(result.text);
-            setShowScanner(false);
-
+          setIsScanning(false);
+          setSku(result.text);
+          setShowScanner(false);
         }
         if (err && !(err instanceof NotFoundException)) {
-            setError("Failed to decode barcode. Adjust the distance or angle and try again.");
+          setError(
+            "Failed to decode barcode. Adjust the distance or angle and try again."
+          );
         }
-    });
-};
-
-  
+      }
+    );
+  };
 
   const stopScanning = () => {
     setIsScanning(false);
     codeReader.reset();
     setShowScanner(false);
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     return () => {
-        codeReader.reset();
+      codeReader.reset();
     };
-}, []);
+  }, []);
 
-const handleSearch = () => {
-  router.push(`/productDetail?sku=${sku}`);
-};
-
+  const handleSearch = () => {
+    router.push(`/productDetail?sku=${sku}`);
+  };
 
   // const handleSearch = useCallback(
   //   (e, scannedSku) => {

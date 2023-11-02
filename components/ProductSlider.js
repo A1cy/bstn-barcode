@@ -25,7 +25,7 @@ const CustomArrow = ({ type, onClick }) => {
   );
 };
 
-const ProductSlider = ({ title, uuid, item_code}) => {
+const ProductSlider = ({ title, uuid, item_code }) => {
   const [products, setProducts] = useState([]);
   const router = useRouter();
 
@@ -107,15 +107,16 @@ const ProductSlider = ({ title, uuid, item_code}) => {
                         <div className="card text-white">
                           <div className="card-body">
                             <a
-                               
-                              onClick={(e) => navigateToProductDetail(e, item_code)}
+                              onClick={(e) =>
+                                navigateToProductDetail(e, item_code)
+                              }
                             >
                               <img
                                 src={`https://dyq4yrh81omo6.cloudfront.net/items/290/${defaultImage}`}
                                 alt="product pic"
                               />
                             </a>
-                            <p className="card-title">{title}</p> 
+                            <p className="card-title">{title}</p>
                             <span className="product-sku">
                               {/* SKU: {item_code} */}
                             </span>
@@ -123,7 +124,7 @@ const ProductSlider = ({ title, uuid, item_code}) => {
                               <p className="card-price">{price}</p>
                               <h3 className="card-currency">SAR</h3> 
                             </div> */}
-{/*                             
+                            {/*                             
                            
                             
                             

@@ -149,6 +149,9 @@ export default function ProductDetailPage() {
       </div>
       <ProductSlider title="Related Products" uuid={uuid} />
       {/* <ProductSlider title="Cross Selling Products" uuid={uuid} /> */}
+      {/* <ProductSlider title="Additions of the Products" data={productData} />
+      <ProductSlider title="Cross Selling Products" data={productData} />
+      <ProductSlider title="Upselling Products" data={productData} /> */}
       <Footer />
     </div>
   );

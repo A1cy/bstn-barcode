@@ -1,5 +1,5 @@
 import React from "react";
-import Link from 'next/link';
+import Link from "next/link";
 // Header and content container
 const HeaderContentContainer = () => {
   return (
@@ -18,16 +18,12 @@ const HeaderContentContainer = () => {
               {" "}
               <span className="navbar-toggler-icon" />{" "}
             </button> */}
-            
             {/* search */}
             <div className="search">
-              <form className="d-flex">
-                {" "}
-              
-              </form>
+              <form className="d-flex"> </form>
             </div>{" "}
             {/* logo */}{" "}
-            <Link  className="navbar-brand" href="/">
+            <Link className="navbar-brand" href="/">
               <img
                 src="pics\BuildStation-logo.png"
                 className="logo"

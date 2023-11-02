@@ -1,7 +1,7 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+import React from "react";
+import { useRouter } from "next/router";
 
-import styles from '../styles/Home.module.css'; // You can update this to your custom CSS
+import styles from "../styles/Home.module.css"; // You can update this to your custom CSS
 
 const IndexPage = () => {
   const router = useRouter();
@@ -9,7 +9,7 @@ const IndexPage = () => {
   const handleLoginSubmit = () => {
     // Perform login logic here
     // If login is successful, you can navigate the user to another page
-    router.push('/home'); // Navigating to home page after login. Update this to your destination page.
+    router.push("/home"); // Navigating to home page after login. Update this to your destination page.
   };
 
   return (
@@ -22,15 +22,27 @@ const IndexPage = () => {
             <span className="user-icon" />
             <label>
               Username:
-              <input placeholder="" className="user-name" type="text" required />
+              <input
+                placeholder=""
+                className="user-name"
+                type="text"
+                required
+              />
             </label>
             <br />
             <label>
               Password:
-              <input placeholder="" className="user-password" type="text" required />
+              <input
+                placeholder=""
+                className="user-password"
+                type="text"
+                required
+              />
             </label>
             <br />
-            <button className="user-log" onClick={handleLoginSubmit}>Login</button>
+            <button className="user-log" onClick={handleLoginSubmit}>
+              Login
+            </button>
           </div>
         </div>
       </div>

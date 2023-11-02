@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from 'react';
+import { useState } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 
 function Footer() {
@@ -83,7 +83,7 @@ function Footer() {
           </div>
         </div>
       )}{" "}
-      <div className="end-footer">
+      {/* <div className="end-footer">
         <div id="left-end-footer">
           <a href="#" id="terms">
             Terms and Conditions
@@ -94,9 +94,9 @@ function Footer() {
         </div>
         <div id="space-between2"></div>
         <div id="right-end-footer">
-          <p id="rights">© 2022 Build Station. All Rights Reserved</p>
+          <p id="rights">© 2023 Build Station. All Rights Reserved</p>
         </div>
-      </div>
+      </div> */}
     </footer>
   );
 }

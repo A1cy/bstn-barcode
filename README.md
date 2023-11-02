@@ -1,3 +1,40 @@
+App Info:
+
+Name: bstn-barcode
+Version: 0.1.0
+Description: it's evident that it's designed to provide comprehensive information about a product based on its SKU. Users can view detailed information, stock availability, product descriptions, specifications, and related products.
+
+Scripts:
+
+dev: For development purposes (next dev).
+build: To build the app (next build).
+start: To start the app (next start).
+lint: To lint the codebase (next lint).
+Dependencies:
+
+Core: next, react, react-dom - This confirms that you're using Next.js with React.
+UI Libraries: @splidejs/splide, react-slick, slick-carousel - For creating carousels/sliders.
+QR & Webcam: @zxing/library, jsqr, react-webcam - For QR code scanning and webcam access.
+HTTP client: axios - For making API requests.
+Dev Dependencies:
+
+Linting: eslint, eslint-config-next - For ensuring code quality.
+
+
+The next.config.js file provides the following configurations:
+
+React Strict Mode: Enabled. This activates additional checks and warnings for your React components, which is helpful during development.
+SWC Minify: Enabled. This utilizes the SWC (Speedy Web Compiler) to minify your JavaScript, which can lead to faster build times compared to the default Terser minifier.
+Images Configuration: You have set up a domain (dyq4yrh81omo6.cloudfront.net) for the Next.js Image component. This means you're probably serving some images from this domain.
+
+
+
+
+
+
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

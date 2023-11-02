@@ -1,9 +1,9 @@
-import React from 'react';
- 
+import React from "react";
+
 const DescriptionSpecification = ({ data }) => {
   if (!data || !data.item) return null;
 
-  const { short_info, attributes, manuals, application, videos } = data.item;
+  const { short_description, info, short_info, attributes, manuals, application, videos } = data.item;
   const baseURL = "https://dyq4yrh81omo6.cloudfront.net/manuals/";
   const appImageBaseURL = "https://dyq4yrh81omo6.cloudfront.net/items/580/";
 
@@ -15,7 +15,18 @@ const DescriptionSpecification = ({ data }) => {
           <div className="Description">
             <p id="Description-heading">Description</p>
             <hr />
-            <div dangerouslySetInnerHTML={{ __html: short_info }} id="Description-content"></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: short_info }}
+              id="Description-content"
+            ></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: info }}
+              id="Description-content"
+            ></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: short_description }}
+              id="Description-content"
+            ></div>
           </div>
         </div>
       )}
@@ -47,7 +58,11 @@ const DescriptionSpecification = ({ data }) => {
             <div className="pdf-icon-padding">
               {manuals.manual.map((manual, index) => (
                 <a key={index} href={`${baseURL}${manual.file}`} download>
-                  <img className="pdf-icon" src="/pics/pdf-icon.png" alt="pdf" />
+                  <img
+                    className="pdf-icon"
+                    src="/pics/pdf-icon.png"
+                    alt="pdf"
+                  />
                   <span id="User-manual-pdf">{manual.title}</span>
                 </a>
               ))}
@@ -59,15 +74,19 @@ const DescriptionSpecification = ({ data }) => {
       {/* Application Images */}
       {application && application.images && application.images.length > 0 && (
         <div className="application-images-section">
-        <div className="application-images">
-          <p id="Application-images">Application Images</p>
-          <hr />
-          <div className="image-grid">
-            {application.images.map((image, index) => (
-              <img key={index} src={`${appImageBaseURL}${image}`} alt="Application" />
-            ))}
+          <div className="application-images">
+            <p id="Application-images">Application Images</p>
+            <hr />
+            <div className="image-grid">
+              {application.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={`${appImageBaseURL}${image}`}
+                  alt="Application"
+                />
+              ))}
+            </div>
           </div>
-        </div>
         </div>
       )}
 

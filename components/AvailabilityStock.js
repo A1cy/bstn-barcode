@@ -23,7 +23,7 @@ const AvailabilityStock = ({ data }) => {
               <tbody>
                 <tr>
                   <td className="left-column" id="Preordered-Quantity">Quantity</td>
-                  <td className="right-column" id="Preordered-num">5</td>
+                  <td className="right-column" id="Preordered-num"> ∞ </td>
                 </tr>
               </tbody>
             </table>
