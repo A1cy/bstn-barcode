@@ -4,7 +4,6 @@ import axios from 'axios';
 export default async function handler(req, res) {
   const { sku } = req.body;
 
-  // Create a new instance of FormData
   const formData = new FormData();
   formData.append('searchText', sku);
 
@@ -14,7 +13,7 @@ export default async function handler(req, res) {
       formData,
       {
         headers: {
-          ...formData.getHeaders(), // Ensuring correct headers for multipart/form-data
+          ...formData.getHeaders(),
           'apikey': "Ujf4ZHdP3zHrmfsvAETpUmvK7BPS/jU/YKCp+VXaF1A=",
           'lang': "en",
           'currency': "SAR",
@@ -28,10 +27,10 @@ export default async function handler(req, res) {
       const { slug, item_category_slug: category, uuid } = product;
       res.status(200).json({ slug, category, uuid });
     } else {
-      throw new Error("Product not found");
+      res.status(500).json({ message: "Failed to fetch data from external API", details: searchResponse.data });
     }
   } catch (error) {
-    console.error("Error in get-product:", error.response ? error.response.data : error.message);
-    res.status(500).json({ error: "Error fetching product", details: error.response ? error.response.data : "No additional error data" });
+    console.error("Error in get-product:", error.message, error.stack);
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 }
