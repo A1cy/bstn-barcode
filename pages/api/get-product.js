@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       formData,
       {
         headers: {
-          ...formData.getHeaders(), // Spread the headers required by the FormData instance
+          ...formData.getHeaders(), // Ensuring correct headers for multipart/form-data
           'apikey': "Ujf4ZHdP3zHrmfsvAETpUmvK7BPS/jU/YKCp+VXaF1A=",
           'lang': "en",
           'currency': "SAR",
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       throw new Error("Product not found");
     }
   } catch (error) {
-    console.error("Error in get-product:", error);
-    res.status(500).json({ error: "Error fetching product" });
+    console.error("Error in get-product:", error.response ? error.response.data : error.message);
+    res.status(500).json({ error: "Error fetching product", details: error.response ? error.response.data : "No additional error data" });
   }
 }
