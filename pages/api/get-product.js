@@ -1,19 +1,24 @@
-import axios from 'axios';
+import axios from "axios";
 
 export default async function handler(req, res) {
   const { sku } = req.body;
-  const url = "https://staging-ksa-v2.build-station.com/build-station-apis-v2/api/items/search-items-ajax";
+  const url =
+    "https://staging-ksa-v2.build-station.com/build-station-apis-v2/api/items/search-items-ajax";
 
   try {
-    const response = await axios.post(url, { searchText: sku }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': 'Ujf4ZHdP3zHrmfsvAETpUmvK7BPS/jU/YKCp+VXaF1A=',
-        'lang': 'en',
-        'currency': 'SAR',
-        'country': 'SA'
+    const response = await axios.post(
+      url,
+      { searchText: sku },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          apikey: process.env.API_KEY,
+          lang: "en",
+          currency: "SAR",
+          country: "SA",
+        },
       }
-    });
+    );
 
     // Check if the API returned any items
     if (
@@ -33,12 +38,15 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     // Log detailed error information
-    console.error("Error in get-product:", error.response ? error.response.data : error.message);
-    
+    console.error(
+      "Error in get-product:",
+      error.response ? error.response.data : error.message
+    );
+
     // Respond with the specific error details
     res.status(500).json({
       error: "Error fetching product detail",
-      details: error.response ? error.response.data : error.message
+      details: error.response ? error.response.data : error.message,
     });
   }
 }
