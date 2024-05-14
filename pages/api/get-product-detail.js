@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       {
         headers: {
           "Content-Type": "application/json",
-          apikey: "Ujf4ZHdP3zHrmfsvAETpUmvK7BPS/jU/YKCp+VXaF1A=",
+          apikey: process.env.API_KEY,
           lang: "en",
           currency: "SAR",
           country: "SA",
